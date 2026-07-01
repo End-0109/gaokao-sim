@@ -8,10 +8,10 @@ const fs = require('fs');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data.db');
 
-async function main() {
+async function main(sharedDb = null) {
   const SQL = await initSqlJs();
-  const db = new SQL.Database();
-  db.run('PRAGMA foreign_keys = ON');
+  const db = sharedDb || new SQL.Database();
+  if (!sharedDb) db.run('PRAGMA foreign_keys = ON');
 
   // 辅助函数
   function dbRun(sql, params = []) {
@@ -711,7 +711,11 @@ async function main() {
 }
 
 if (require.main === module) {
+  if (require.main === module) {
   main().catch(e => { console.error(e); process.exit(1); });
+}
+
+module.exports = { main };
 }
 
 module.exports = { main };
