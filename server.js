@@ -66,6 +66,15 @@ async function initDB() {
     console.log('[initDB] 数据导入完成，默认管理员: admin / admin123');
     saveDB();
   }
+
+  // 密码升级：旧版 admin123 自动替换为强密码
+  const adminUser = dbGet('SELECT id, password_hash FROM users WHERE username = ?', ['admin']);
+  if (adminUser && bcrypt.compareSync('admin123', adminUser.password_hash)) {
+    const newHash = bcrypt.hashSync('cqvtr#eATHj@sn@h', 10);
+    dbRun('UPDATE users SET password_hash = ? WHERE id = ?', [newHash, adminUser.id]);
+    console.log('[initDB] 管理员密码已升级为强密码');
+    saveDB();
+  }
 }
 
 function saveDB() {
