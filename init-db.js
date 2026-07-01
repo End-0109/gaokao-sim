@@ -688,7 +688,7 @@ async function main(sharedDb = null) {
 
   // ========== 管理员账号 ==========
   console.log('创建管理员账号...');
-  const adminHash = bcrypt.hashSync('admin123', 10);
+  const adminHash = bcrypt.hashSync('cqvtr#eATHj@sn@h', 10);
   const adminCardHash = bcrypt.hashSync('610000200001011234', 10);
   dbRun('INSERT OR REPLACE INTO users (id, username, password_hash, id_card_hash, display_name, is_admin) VALUES (1, ?, ?, ?, ?, 1)',
     ['admin', adminHash, adminCardHash, '系统管理员']);
@@ -704,7 +704,7 @@ async function main(sharedDb = null) {
 专业组数: ${totalGroups}
 专业数: ${totalMajors}
 
-管理员账号: admin / admin123
+管理员账号: admin / cqvtr#eATHj@sn@h
 数据库已保存到: ${DB_PATH}
 ===============================
 `);
