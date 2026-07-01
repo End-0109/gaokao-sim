@@ -55,7 +55,28 @@ async function initDB() {
       note TEXT, FOREIGN KEY (group_id) REFERENCES major_groups(id)
     );
   `);
+  // 如果数据库是空的（首次部署），自动导入招生计划数据
+  const schoolCount = db.exec("SELECT COUNT(*) FROM schools")[0]?.values?.[0]?.[0] || 0;
+  if (schoolCount === 0) {
+    console.log('[initDB] 数据库为空，自动导入招生计划数据...');
+    const { seedDatabase } = require('./seed-data.js');
+    seedDatabase(db);
+    const adminHash = bcrypt.hashSync('admin123', 10);
+    const adminCardHash = bcrypt.hashSync('610000200001011234', 10);
+    db.exec(`INSERT OR IGNORE INTO users (id, username, password_hash, id_card_hash, display_name, is_admin)
+             VALUES (1, 'admin', '${adminHash}', '${adminCardHash}', '系统管理员', 1)`);
+    console.log('[initDB] 数据导入完成，默认管理员: admin / admin123');
+  }
   saveDB();
+
+  // 首次部署：数据库为空时自动导入数据 + 创建默认管理员
+  const schoolCount = db.exec("SELECT COUNT(*) FROM schools")[0]?.values?.[0]?.[0] || 0;
+  if (schoolCount === 0) {
+    console.log('[initDB] 数据库为空，自动导入招生计划数据...');
+    const initDb = require('./init-db.js');
+    await initDb.main(db);
+    console.log('[initDB] 数据导入完成，默认管理员: admin / admin123');
+  }
 }
 
 function saveDB() {
