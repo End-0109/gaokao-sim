@@ -365,7 +365,7 @@ app.get('*', (req, res) => { res.redirect('/'); });
 
 async function start() {
   await initDB();
-  app.listen(PORT, () => console.log(`陕西省志愿填报模拟系统已启动: http://localhost:${PORT}`));
+  app.listen(PORT, '0.0.0.0', () => console.log(`陕西省志愿填报模拟系统已启动: http://0.0.0.0:${PORT}`));
 }
 process.on('SIGINT', () => { saveDB(); process.exit(); });
 process.on('SIGTERM', () => { saveDB(); process.exit(); });
