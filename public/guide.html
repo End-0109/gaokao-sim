@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>报考指南 — 陕西省高考志愿模拟填报系统</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background:#eef2f6; min-height:100vh; font-size:14px; color:#333; }
+.top-bar { background: linear-gradient(135deg,#1a3a6b,#1f4d8c); color:#fff; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; }
+.top-bar .sys-name { font-size:15px; font-weight:700; }
+.top-bar a { color:#bdd4f0; text-decoration:none; font-size:12px; }
+.main { max-width:900px; margin:0 auto; padding:14px; }
+.card { background:#fff; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.05); padding:24px; line-height:1.8; }
+.card h1 { font-size:clamp(18px,5vw,22px); color:#1a3a6b; padding-bottom:10px; border-bottom:2px solid #1a3a6b; margin-bottom:16px; }
+.card h2 { font-size:16px; color:#1a3a6b; margin:22px 0 8px; padding-left:10px; border-left:3px solid #1a3a6b; }
+.card h3 { font-size:14px; color:#444; margin:14px 0 6px; }
+.card p { margin-bottom:8px; }
+.card ul, .card ol { margin:8px 0 14px 18px; }
+.card li { margin-bottom:5px; }
+.card table { width:100%; border-collapse:collapse; margin:10px 0; font-size:13px; }
+.card th { background:#f0f3f7; padding:8px 10px; border:1px solid #d8dde5; text-align:left; }
+.card td { padding:8px 10px; border:1px solid #d8dde5; }
+.card .tip { background:#e8f5e9; border-left:4px solid #2b6e3b; padding:10px 14px; margin:10px 0; border-radius:0 6px 6px 0; }
+.card .warn { background:#fff3e0; border-left:4px solid #e65100; padding:10px 14px; margin:10px 0; border-radius:0 6px 6px 0; }
+.card .info { background:#e3f2fd; border-left:4px solid #1976d2; padding:10px 14px; margin:10px 0; border-radius:0 6px 6px 0; }
+.footer { text-align:center; padding:16px; font-size:11px; color:#999; }
+.footer a { color:#1a3a6b; }
+@media (max-width:768px) {
+  .main { padding:8px; }
+  .card { padding:16px; }
+  .card ul, .card ol { margin-left:14px; }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="sys-name">📋 报考指南</div>
+  <a href="/">← 返回填报</a>
+</div>
+<div class="main">
+<div class="card">
+<h1>陕西省2025年高职（专科）批次志愿填报指南</h1>
+
+<div class="warn"><strong>⚠️ 模拟系统声明：</strong>本文档参考陕西省教育考试院官方说明整理，仅供参考。正式填报请以官方为准。本模拟系统仅用于练手。</div>
+
+<h2>一、填报时间</h2>
+<p>高职（专科）批次志愿填报时间以陕西省教育考试院官方通知为准，通常在本科批次录取结束后进行。</p>
+
+<h2>二、志愿设置</h2>
+<h3>2.1 院校专业组模式</h3>
+<p>2025年陕西省专科批次实行<strong>"院校专业组"</strong>平行志愿投档模式：</p>
+<ul>
+  <li>每位考生最多可填报<strong>45个院校专业组志愿</strong></li>
+  <li>每个院校专业组内最多填<strong>6个专业志愿</strong></li>
+  <li>每个专业组可选是否<strong>"服从专业调剂"</strong></li>
+</ul>
+
+<h3>2.2 平行志愿规则</h3>
+<p>投档原则："<strong>分数优先、遵循志愿、一轮投档</strong>"：</p>
+<ul>
+  <li><strong>分数优先：</strong>按投档分从高到低排序</li>
+  <li><strong>遵循志愿：</strong>逐志愿检索，先匹配先投</li>
+  <li><strong>一轮投档：</strong>每人只有一次投档机会</li>
+</ul>
+
+<div class="tip"><strong>💡 推荐策略：</strong>"冲稳保"三梯度——前15个冲刺、中15个稳妥、后15个保底。</div>
+
+<h2>三、填报流程</h2>
+<ol>
+  <li>登录陕西省教育考试院志愿填报系统</li>
+  <li>输入<strong>4位院校代号</strong>→ 自动显示院校名称</li>
+  <li>输入<strong>3位专业组代号</strong>→ 自动显示专业组名称</li>
+  <li>输入<strong>2位专业代号</strong>→ 自动显示专业详情</li>
+  <li>勾选是否服从调剂</li>
+  <li>核对无误后，<strong>输入身份证号确认提交</strong></li>
+  <li>确认后不可再修改</li>
+</ol>
+
+<h2>四、代号规则</h2>
+<table>
+  <tr><th>类型</th><th>位数</th><th>示例</th><th>说明</th></tr>
+  <tr><td>院校代号</td><td>4位</td><td>8119</td><td>省教育考试院统一编制</td></tr>
+  <tr><td>专业组代号</td><td>3位</td><td>001</td><td>院校内按选科划分的专业组</td></tr>
+  <tr><td>专业代号</td><td>2位</td><td>01</td><td>专业组内具体专业编码</td></tr>
+</table>
+
+<div class="info"><strong>📌 注意：</strong>输入代号后系统自动带出名称。无效代号会显示红色提示。</div>
+
+<h2>五、重要提醒</h2>
+<div class="warn"><ul>
+  <li>志愿确认后无法修改</li>
+  <li>务必核对院校代号和名称对应</li>
+  <li>"服从调剂"有助于降低退档风险</li>
+  <li>不服从且所有专业均无法录取=退档</li>
+  <li>截止前请留足时间</li>
+</ul></div>
+
+<h2>六、常见问题</h2>
+<h3>Q1: 45个志愿必须填满吗？</h3><p>不需要，但建议多填增加录取机会。</p>
+<h3>Q2: 退档了怎么办？</h3><p>只能参加征集志愿（补录）或等下一批次。</p>
+<h3>Q3: 确认后能改吗？</h3><p>不能。确认前务必仔细核对。</p>
+</div>
+</div>
+<div class="footer">本指南仅供参考 | 正式填报：<a href="https://www.sneea.cn" target="_blank">陕西省教育考试院官网</a></div>
+</body>
+</html>

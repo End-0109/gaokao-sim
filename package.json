@@ -1,0 +1,18 @@
+﻿{
+  "name": "shaanxi-gaokao-sim",
+  "version": "1.0.0",
+  "description": "陕西省2025年高考志愿模拟填报系统 - 专科批次",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node init-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "localtunnel": "^2.0.2",
+    "sql.js": "^1.10.3",
+    "uuid": "^9.0.0"
+  }
+}

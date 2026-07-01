@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>招生计划 — 陕西省高考志愿模拟填报系统</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background:#eef2f6; min-height:100vh; font-size:14px; color:#333; }
+.top-bar { background: linear-gradient(135deg,#1a3a6b,#1f4d8c); color:#fff; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.top-bar .sys-name { font-size:15px; font-weight:700; }
+.top-bar a { color:#bdd4f0; text-decoration:none; font-size:12px; }
+.main { max-width:1200px; margin:0 auto; padding:14px; }
+.card { background:#fff; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.05); padding:20px; }
+.card h1 { font-size:clamp(16px,4vw,20px); color:#1a3a6b; margin-bottom:4px; }
+.card .sub { font-size:12px; color:#999; margin-bottom:14px; }
+.warn-banner { background:#fff8e1; border:2px solid #ff9800; padding:8px 14px; border-radius:6px; margin-bottom:12px; font-size:12px; color:#805b00; text-align:center; }
+.search-bar { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+.search-bar input, .search-bar select { padding:8px 12px; border:2px solid #e0e5ec; border-radius:6px; font-size:14px; }
+.search-bar input { flex:1; min-width:150px; }
+.search-bar input:focus, .search-bar select:focus { border-color:#1a3a6b; outline:none; }
+.search-bar button { padding:8px 16px; background:#1a3a6b; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; }
+.search-bar button:hover { background:#152e56; }
+.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table { width:100%; border-collapse:collapse; font-size:12px; min-width:960px; }
+th { background:#f0f3f7; padding:8px 6px; border-bottom:2px solid #d8dde5; text-align:center; color:#666; font-weight:500; white-space:nowrap; position:sticky; top:0; }
+td { padding:6px; border-bottom:1px solid #eef0f2; text-align:center; }
+tr:hover { background:#f5f7fa; }
+.pager { display:flex; justify-content:center; align-items:center; gap:8px; margin-top:14px; font-size:13px; flex-wrap:wrap; }
+.pager button { padding:6px 14px; border:1px solid #d8dde5; background:#fff; border-radius:6px; cursor:pointer; font-size:13px; }
+.pager button:hover { background:#f0f3f7; }
+.pager button:disabled { color:#ccc; cursor:not-allowed; }
+.footer { text-align:center; padding:16px; font-size:11px; color:#999; }
+@media (max-width:768px) { .main { padding:8px; } .card { padding:12px; } }
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="sys-name">📊 招生计划</div>
+  <a href="/">← 返回填报</a>
+</div>
+<div class="main">
+<div class="warn-banner"><strong>⚠️ 模拟数据，非官方真实招生计划。</strong> 仅供参考，正式信息请查阅陕西省教育考试院官网发布的招生计划。</div>
+
+<div class="card">
+  <h1>2025年高职（专科）批次在陕招生计划</h1>
+  <div class="sub"><span id="totalCount">加载中…</span></div>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="搜索院校、专业…" onkeydown="if(event.key==='Enter')search(1)">
+    <select id="provinceFilter" onchange="search(1)"><option value="">全部省份</option></select>
+    <button onclick="search(1)">🔍</button>
+    <button onclick="resetSearch()" style="background:#fff;color:#1a3a6b;border:1px solid #d8dde5;">重置</button>
+  </div>
+
+  <div class="table-wrap">
+  <table><thead><tr>
+    <th style="width:10%;">院校代号</th><th style="width:18%;">院校名称</th><th style="width:7%;">省份</th><th style="width:8%;">类型</th>
+    <th style="width:8%;">专业组</th><th style="width:12%;">专业组名称</th><th style="width:6%;">选科</th>
+    <th style="width:8%;">专业代号</th><th style="width:15%;">专业名称</th><th style="width:8%;">招生人数</th><th style="width:8%;">学费</th>
+  </tr></thead>
+  <tbody id="planBody"><tr><td colspan="11" style="padding:20px;color:#999;">加载中…</td></tr></tbody></table>
+  </div>
+
+  <div class="pager">
+    <button id="prevBtn" onclick="prevPage()" disabled>← 上一页</button>
+    <span id="pageInfo">第 1 页</span>
+    <button id="nextBtn" onclick="nextPage()">下一页 →</button>
+  </div>
+</div>
+</div>
+<div class="footer">以上为模拟数据 | 正式数据：<a href="https://www.sneea.cn" target="_blank" style="color:#1a3a6b;">陕西省教育考试院</a></div>
+
+<script>
+let cp=1, tp=1;
+async function init() { try { const r = await fetch('/api/me'); if (!r.ok) location.href='/login.html'; } catch(e) { location.href='/login.html'; } await search(1); }
+async function search(p) {
+  cp=p;
+  const kw=document.getElementById('searchInput').value.trim();
+  const pv=document.getElementById('provinceFilter').value;
+  let url=`/api/plan?page=${p}&limit=50`; if(kw)url+='&keyword='+encodeURIComponent(kw); if(pv)url+='&province='+encodeURIComponent(pv);
+  try {
+    const r = await fetch(url); const d = await r.json();
+    tp=d.totalPages; document.getElementById('totalCount').textContent=`共 ${d.total} 条`;
+    document.getElementById('pageInfo').textContent=`第 ${d.page}/${d.totalPages} 页`;
+    document.getElementById('prevBtn').disabled=d.page<=1;
+    document.getElementById('nextBtn').disabled=d.page>=d.totalPages;
+    document.getElementById('planBody').innerHTML = d.rows.length ? d.rows.map(r=>`<tr>
+      <td><strong>${r.school_code}</strong></td><td style="text-align:left;">${r.school_name}</td><td>${r.province||''}</td><td>${r.school_type||''}</td>
+      <td>${r.group_code}</td><td style="text-align:left;">${r.group_name||''}</td><td>${r.subject_requirement||'不限'}</td>
+      <td>${r.major_code}</td><td style="text-align:left;">${r.major_name}</td><td>${r.plan_count}</td><td>${r.tuition?r.tuition.toLocaleString():'-'}</td>
+    </tr>`).join('') : '<tr><td colspan="11" style="padding:20px;color:#999;">无结果</td></tr>';
+    // 省份筛选
+    const sel = document.getElementById('provinceFilter');
+    if (sel.children.length <= 1 && d.rows.length) {
+      const ps = [...new Set(d.rows.map(r=>r.province).filter(Boolean))].sort();
+      ps.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
+    }
+  } catch(e) { document.getElementById('planBody').innerHTML='<tr><td colspan="11" style="padding:20px;color:#c62828;">加载失败</td></tr>'; }
+}
+function prevPage(){if(cp>1)search(cp-1);}
+function nextPage(){search(cp+1);}
+function resetSearch(){document.getElementById('searchInput').value='';document.getElementById('provinceFilter').value='';search(1);}
+window.addEventListener('load',init);
+</script>
+</body>
+</html>

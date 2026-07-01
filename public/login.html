@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>登录 — 陕西省高考志愿模拟填报系统</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background: linear-gradient(160deg, #f0f4f8 0%, #dce3ed 40%, #c8d4e2 100%); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px; }
+.wrap { width:100%; max-width:420px; }
+/* 头部 */
+.header { text-align:center; margin-bottom:24px; }
+.header h1 { font-size:clamp(20px,5vw,26px); color:#1a3a6b; font-weight:700; letter-spacing:1px; }
+.header .sub { font-size:13px; color:#666; margin-top:4px; }
+/* 卡片 */
+.card { background:#fff; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.08); padding:28px 24px; }
+.card h2 { font-size:18px; color:#333; text-align:center; margin-bottom:6px; }
+.card .hint { text-align:center; color:#999; font-size:12px; margin-bottom:18px; }
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; font-size:13px; color:#555; margin-bottom:5px; font-weight:600; }
+.form-group input { width:100%; padding:11px 14px; border:2px solid #e0e5ec; border-radius:8px; font-size:15px; transition:border-color .2s; background:#fafbfc; }
+.form-group input:focus { border-color:#1a3a6b; outline:none; background:#fff; }
+.btn-login { width:100%; padding:12px; background:#1a3a6b; color:#fff; border:none; border-radius:8px; font-size:16px; font-weight:700; cursor:pointer; margin-top:6px; letter-spacing:2px; transition:background .2s; }
+.btn-login:hover { background:#152e56; }
+.btn-login:disabled { background:#a0a8b4; cursor:not-allowed; }
+.msg { font-size:12px; margin-top:10px; text-align:center; min-height:18px; }
+.msg.error { color:#c62828; }
+.msg.ok { color:#2b6e3b; }
+/* 底部链接 */
+.footer-links { margin-top:18px; text-align:center; }
+.footer-links a { display:inline-block; color:#1a3a6b; text-decoration:none; font-size:13px; margin:4px 8px; padding:6px 12px; background:#eef3f8; border-radius:6px; transition:background .2s; }
+.footer-links a:hover { background:#dce6f0; }
+/* 免责声明 */
+.disclaimer { margin-top:20px; padding:12px 14px; background:rgba(255,248,225,0.95); border:1px solid #ffe082; border-radius:8px; font-size:11px; color:#805b00; line-height:1.7; text-align:center; }
+.disclaimer strong { color:#e65100; }
+/* 移动端 */
+@media (max-width:480px) {
+  .card { padding:24px 16px; }
+  .form-group input { padding:10px 12px; font-size:16px; }
+  .btn-login { padding:12px; font-size:16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>陕西省高考志愿模拟填报系统</h1>
+    <div class="sub">高职（专科）批次 · 免费模拟练习平台</div>
+  </div>
+  <div class="card">
+    <h2>用户登录</h2>
+    <p class="hint">考生 / 管理员统一登录入口</p>
+    <div class="form-group"><label>账号</label><input type="text" id="username" placeholder="输入账号" autocomplete="off" inputmode="numeric"></div>
+    <div class="form-group"><label>密码</label><input type="password" id="password" placeholder="输入密码" onkeydown="if(event.key==='Enter')login()"></div>
+    <button class="btn-login" id="loginBtn" onclick="login()">登 录</button>
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="footer-links">
+    <a href="/guide.html">📋 报考指南</a>
+    <a href="/plan.html">📊 招生计划</a>
+    <a href="/history.html">📈 历年录取</a>
+  </div>
+  <div class="disclaimer">
+    <strong>⚠️ 免责声明：</strong>本网站为<strong>免费模拟练习平台，非官方志愿填报系统</strong>。<br>
+    志愿数据保存在本地浏览器，暂不上传服务器。<br>
+    正式填报请登录<a href="https://www.sneea.cn" target="_blank" style="color:#1a3a6b;">陕西省教育考试院官网</a>。
+  </div>
+</div>
+<script>
+async function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('loginBtn');
+  if (!username || !password) { msg.textContent = '请输入账号和密码'; msg.className = 'msg error'; return; }
+  btn.disabled = true; btn.textContent = '登录中…'; msg.textContent = ''; msg.className = 'msg';
+  try {
+    const r = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username, password}) });
+    const d = await r.json();
+    if (r.ok && d.ok) {
+      msg.className = 'msg ok'; msg.textContent = '登录成功，跳转中…';
+      setTimeout(() => { window.location.href = '/'; }, 400);
+    } else {
+      msg.textContent = d.error || '登录失败'; msg.className = 'msg error';
+      btn.disabled = false; btn.textContent = '登 录';
+    }
+  } catch(e) { msg.textContent = '服务未启动，请刷新重试'; msg.className = 'msg error'; btn.disabled = false; btn.textContent = '登 录'; }
+}
+</script>
+</body>
+</html>

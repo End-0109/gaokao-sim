@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>管理后台 — 陕西省高考志愿模拟填报系统</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background:#eef2f6; min-height:100vh; font-size:14px; color:#333; }
+.top-bar { background: linear-gradient(135deg,#1a3a6b,#1f4d8c); color:#fff; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.top-bar .sys-name { font-size:15px; font-weight:700; }
+.top-bar .user-info { font-size:12px; display:flex; align-items:center; gap:10px; }
+.top-bar .user-info button { background:rgba(255,255,255,0.12); border:none; color:#fff; padding:5px 14px; border-radius:5px; cursor:pointer; font-size:12px; }
+.main { max-width:1200px; margin:0 auto; padding:14px; }
+.tabs { display:flex; gap:0; margin-bottom:0; overflow-x:auto; }
+.tab { padding:10px 20px; background:#dce3ec; border:none; cursor:pointer; font-size:14px; border-radius:6px 6px 0 0; color:#666; white-space:nowrap; }
+.tab.on { background:#fff; color:#1a3a6b; font-weight:700; }
+.card { background:#fff; border-radius:0 8px 8px 8px; box-shadow:0 2px 12px rgba(0,0,0,0.05); padding:20px; }
+.card h3 { font-size:16px; margin-bottom:14px; color:#1a3a6b; }
+.btn { padding:8px 18px; border:none; border-radius:6px; font-size:13px; cursor:pointer; font-weight:600; }
+.btn-primary { background:#1a3a6b; color:#fff; }
+.btn-primary:hover { background:#152e56; }
+.btn-danger { background:#c62828; color:#fff; }
+.btn-sm { padding:5px 10px; font-size:11px; }
+.form-row { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; margin-bottom:14px; }
+.form-group label { display:block; font-size:12px; color:#666; margin-bottom:4px; font-weight:600; }
+.form-group input { padding:8px 10px; border:2px solid #e0e5ec; border-radius:6px; font-size:14px; width:130px; }
+.form-group input:focus { border-color:#1a3a6b; outline:none; }
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:16px; }
+.stat-card { background:#f7f9fc; border-radius:8px; padding:14px; text-align:center; border:1px solid #e6eaf0; }
+.stat-card .num { font-size:28px; font-weight:800; color:#1a3a6b; }
+.stat-card .label { font-size:12px; color:#888; margin-top:4px; }
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:12px; min-width:800px; }
+th { background:#f0f3f7; padding:8px 8px; border-bottom:2px solid #d8dde5; text-align:center; color:#666; font-weight:500; white-space:nowrap; }
+td { padding:6px 8px; border-bottom:1px solid #eef0f2; text-align:center; }
+tr:hover { background:#f5f7fa; }
+.tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; }
+.tag-active { background:#e8f5e9; color:#2b6e3b; }
+.tag-disabled { background:#ffebee; color:#c62828; }
+.account-list { max-height:400px; overflow:auto; border:1px solid #ddd; border-radius:6px; margin-top:10px; padding:12px; background:#fafafa; display:none; }
+.msg { font-size:12px; margin-top:8px; }
+.msg.ok { color:#2b6e3b; }
+.msg.err { color:#c62828; }
+@media (max-width:768px) {
+  .main { padding:8px; }
+  .card { padding:14px; }
+  .tab { padding:8px 14px; font-size:13px; }
+  .stat-grid { grid-template-columns:repeat(2,1fr); }
+  .stat-card .num { font-size:22px; }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="sys-name">🔧 管理后台 · 陕西志愿模拟</div>
+  <div class="user-info">
+    <span id="userDisplay"></span>
+    <button onclick="logout()">退出</button>
+  </div>
+</div>
+<div class="main">
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('generate')">📦 生成账号</button>
+    <button class="tab" onclick="switchTab('users')">👥 用户管理</button>
+    <button class="tab" onclick="switchTab('stats')">📊 数据统计</button>
+  </div>
+
+  <div class="card" id="tab-generate">
+    <h3>📦 批量生成模拟账号</h3>
+    <p style="font-size:12px;color:#999;margin-bottom:12px;">账号格式: 2561{学校}{年份}{序号}，模拟真实准考证格式。密码随机6位数字。IP首次登录自动绑定。</p>
+    <div class="form-row">
+      <div class="form-group"><label>生成数量</label><input type="number" id="genCount" value="10" min="1" max="200"></div>
+      <div class="form-group"><label>密码前缀</label><input type="text" id="genPrefix" value="ZK"></div>
+      <button class="btn btn-primary" onclick="generateAccounts()">🚀 生成</button>
+    </div>
+    <div class="msg" id="genMsg"></div>
+    <div class="account-list" id="accountList"></div>
+  </div>
+
+  <div class="card" id="tab-users" style="display:none;">
+    <h3>👥 用户管理</h3>
+    <div class="form-row">
+      <input type="text" id="userSearch" placeholder="搜索用户名..." style="padding:8px 12px;border:2px solid #e0e5ec;border-radius:6px;font-size:14px;flex:1;min-width:180px;" onkeydown="if(event.key==='Enter')loadUsers()">
+      <button class="btn btn-primary" onclick="loadUsers()">搜索</button>
+    </div>
+    <div class="table-wrap">
+    <table><thead><tr>
+      <th>ID</th><th>用户名</th><th>密码</th><th>身份证</th><th>绑定IP</th><th>登录次数</th><th>最后登录</th><th>状态</th><th>操作</th>
+    </tr></thead>
+    <tbody id="userTable"><tr><td colspan="9" style="padding:16px;color:#999;">点击搜索加载——生成账号后在此查看</td></tr></tbody></table>
+    </div>
+  </div>
+
+  <div class="card" id="tab-stats" style="display:none;">
+    <h3>📊 数据统计</h3>
+    <div class="stat-grid" id="statsGrid">
+      <div class="stat-card"><div class="num">-</div><div class="label">考生账号总数</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">有过登录的用户</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">有过活动的用户</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">今日活跃用户</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">院校数量</div></div>
+      <div class="stat-card"><div class="num">-</div><div class="label">专业条目</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function checkAdmin() {
+  try { const r = await fetch('/api/check-session'); const d = await r.json(); if (!d.isAdmin) { window.location.href='/'; } else { document.getElementById('userDisplay').textContent = d.username; } }
+  catch(e) { window.location.href='/'; }
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.toggle('on', t.textContent.includes(name==='generate' ? '生成' : name==='users' ? '用户' : '统计')); });
+  var cards = document.querySelectorAll('.card');
+  for (var i = 0; i < cards.length; i++) cards[i].style.display = 'none';
+  document.getElementById('tab-'+name).style.display = 'block';
+  if (name === 'stats') loadStats();
+  if (name === 'users') loadUsers();
+}
+
+async function generateAccounts() {
+  var count = parseInt(document.getElementById('genCount').value);
+  var prefix = document.getElementById('genPrefix').value;
+  var msg = document.getElementById('genMsg');
+  var list = document.getElementById('accountList');
+  msg.textContent = '生成中…'; msg.className='msg';
+  try {
+    var r = await fetch('/api/admin/generate-accounts', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({count:count, prefix:prefix}) });
+    var d = await r.json();
+    if (r.ok && d.ok) {
+      msg.textContent = '✅ 已生成 ' + d.count + ' 个账号（批次: ' + d.batchId + '）';
+      msg.className = 'msg ok';
+      list.style.display = 'block';
+      var rows = '';
+      for (var i = 0; i < d.accounts.length; i++) {
+        var a = d.accounts[i];
+        rows += '<tr><td>'+(i+1)+'</td><td style="font-family:monospace">'+a.username+'</td><td style="font-family:monospace;color:#c62828;">'+a.password+'</td><td style="font-family:monospace">'+a.idCard+'</td></tr>';
+      }
+      list.innerHTML = '<div style="margin-bottom:8px;font-weight:600;color:#1a3a6b;">⚠️ 已自动保存至数据库，可在用户管理中查看：</div><div style="overflow-x:auto;"><table style="min-width:500px;font-size:11px;"><thead><tr><th>#</th><th>用户名</th><th>密码</th><th>身份证</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+      setTimeout(function(){ switchTab('users'); }, 500);
+    } else { msg.textContent = d.error || '失败'; msg.className='msg err'; }
+  } catch(e) { msg.textContent = '网络错误'; msg.className='msg err'; }
+}
+
+async function loadUsers() {
+  var kw = document.getElementById('userSearch').value.trim();
+  try {
+    var r = await fetch('/api/admin/users?' + (kw ? 'search='+encodeURIComponent(kw)+'&' : '') + 'limit=100');
+    var d = await r.json();
+    if (d.users.length) {
+      var rows = '';
+      for (var j = 0; j < d.users.length; j++) {
+        var u = d.users[j];
+        rows += '<tr>'+
+          '<td>'+u.id+'</td>'+
+          '<td><strong>'+u.username+'</strong></td>'+
+          '<td style="font-family:monospace;font-size:11px;color:#c62828;">'+(u.raw_password||'<span style="color:#999;">——</span>')+'</td>'+
+          '<td style="font-family:monospace;font-size:11px;">'+(u.raw_idcard||'<span style="color:#999;">——</span>')+'</td>'+
+          '<td style="font-size:10px;max-width:110px;overflow:hidden;text-overflow:ellipsis;">'+(u.locked_ip||'<span style="color:#999;">未绑定</span>')+'</td>'+
+          '<td>'+(u.login_count||0)+'</td>'+
+          '<td style="font-size:10px;">'+(u.last_login ? u.last_login.replace('T',' ').substring(0,19) : '-')+'</td>'+
+          '<td><span class="tag '+(u.is_disabled?'tag-disabled':'tag-active')+'">'+(u.is_disabled?'已停用':'正常')+'</span></td>'+
+          '<td>'+
+            '<button class="btn btn-sm btn-primary" onclick="toggleUser('+u.id+')">'+(u.is_disabled?'启用':'停用')+'</button> '+
+            '<button class="btn btn-sm btn-danger" onclick="resetIp('+u.id+')">解绑IP</button> '+
+            '<button class="btn btn-sm" style="background:#666;color:#fff;" onclick="deleteUser('+u.id+',\''+u.username+'\')">删除</button>'+
+          '</td>'+
+        '</tr>';
+      }
+      document.getElementById('userTable').innerHTML = rows;
+    } else {
+      document.getElementById('userTable').innerHTML = '<tr><td colspan="9" style="padding:16px;color:#999;">暂无用户数据，先生成账号吧</td></tr>';
+    }
+  } catch(e) {}
+}
+
+async function toggleUser(id) { await fetch('/api/admin/users/'+id+'/toggle',{method:'POST'}); loadUsers(); }
+
+async function resetIp(id) { await fetch('/api/admin/users/'+id+'/reset-ip',{method:'POST'}); loadUsers(); }
+
+async function deleteUser(id, name) {
+  if (!confirm('确定删除用户「' + name + '」？\n该操作不可恢复。')) return;
+  await fetch('/api/admin/users/'+id, {method:'DELETE'});
+  loadUsers();
+}
+
+async function loadStats() {
+  try {
+    var r = await fetch('/api/admin/stats'); var d = await r.json();
+    var cards = document.querySelectorAll('#statsGrid .stat-card');
+    var vals = [d.totalUsers, d.loggedInUsers, d.activeUsers, d.todayUsers, d.totalSchools, d.totalMajors];
+    for (var i = 0; i < cards.length; i++) { cards[i].querySelector('.num').textContent = vals[i]!=null ? vals[i] : '-'; }
+  } catch(e) {}
+}
+
+async function logout() { await fetch('/api/logout',{method:'POST'}); window.location.href='/'; }
+window.addEventListener('load', checkAdmin);
+</script>
+</body>
+</html>

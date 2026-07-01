@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>志愿填报 — 陕西省高考志愿模拟填报系统</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background:#eef2f6; min-height:100vh; font-size:14px; color:#333; -webkit-tap-highlight-color:transparent; }
+.top-bar { background: linear-gradient(135deg,#1a3a6b,#1f4d8c); color:#fff; position:sticky; top:0; z-index:100; }
+.top-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; flex-wrap:wrap; gap:8px; }
+.top-inner .sys-name { font-size:clamp(13px,3vw,16px); font-weight:700; }
+.top-inner .user-info { font-size:12px; display:flex; align-items:center; gap:8px; }
+.top-inner .user-info button,.top-inner .user-info a { background:rgba(255,255,255,0.12); border:none; color:#fff; padding:5px 14px; border-radius:5px; cursor:pointer; font-size:12px; text-decoration:none; }
+.disclaimer { background:#fff3cd; color:#856404; text-align:center; padding:6px 10px; font-size:11px; border-bottom:1px solid #ffc107; }
+.locked-banner { background: linear-gradient(135deg,#2b6e3b,#388e3c); color:#fff; text-align:center; padding:10px; font-size:14px; display:none; }
+.lock-text { font-weight:700; }
+.lock-sub { font-size:11px; opacity:0.8; margin-top:4px; }
+.action-bar { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:#fff; border-bottom:1px solid #e0e5ec; flex-wrap:wrap; gap:6px; }
+.action-bar .status-text { font-size:13px; color:#666; }
+.action-bar .status-text span { font-weight:700; color:#1a3a6b; }
+.action-bar .btns { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+.btn { padding:10px 20px; border:none; border-radius:6px; font-size:14px; cursor:pointer; font-weight:600; }
+.btn-save { background:#1a3a6b; color:#fff; }
+.btn-confirm { background:#c62828; color:#fff; font-weight:700; }
+.btn-danger { background:#c62828; color:#fff; font-weight:700; }
+.btn-rollback { background:#ef6c00; color:#fff; padding:8px 16px; border:none; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; transition:background .2s; }
+.btn-rollback:hover { background:#e65100; }
+.helper-panel { max-width:1200px; margin:0 auto; padding:0 16px; }
+.helper-toggle { cursor:pointer; color:#1a3a6b; padding:8px 0; font-size:13px; user-select:none; }
+.helper-body { padding:10px 14px; display:none; }
+.helper-body.open { display:block; }
+.helper-body input { width:100%; padding:9px 12px; border:2px solid #e0e5ec; border-radius:6px; font-size:14px; }
+.helper-body input:focus { border-color:#1a3a6b; outline:none; }
+.helper-results { max-height:280px; overflow-y:auto; margin-top:6px; font-size:12px; }
+.helper-results .row { padding:4px 0; border-bottom:1px solid #f0f0f0; }
+.helper-results .code { font-weight:700; color:#1a3a6b; margin-right:4px; }
+.main { max-width:1200px; margin:0 auto; padding:0 16px 20px; }
+.table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:8px; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+table { width:100%; border-collapse:collapse; background:#fff; min-width:980px; }
+th { background:#f0f3f7; padding:8px 4px; font-size:11px; color:#666; font-weight:500; border-bottom:2px solid #d8dde5; white-space:nowrap; text-align:center; }
+th.small { font-size:10px; }
+td { padding:4px 2px; border-bottom:1px solid #eef0f2; text-align:center; }
+td.order { font-size:12px; font-weight:700; color:#1a3a6b; width:30px; }
+input[type="text"].code-school { width:50px; }
+input[type="text"].code-group { width:40px; }
+input[type="text"].code-major { width:36px; font-size:11px; }
+input[type="text"] { padding:5px; border:2px solid #e0e5ec; border-radius:4px; text-align:center; font-size:13px; }
+input[type="text"]:focus { border-color:#1a3a6b; outline:none; }
+input[type="text"]:disabled { background:#f5f5f5; color:#999; cursor:not-allowed; }
+.auto-name { font-size:10px; color:#2b6e3b; margin-top:1px; max-width:70px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.auto-name.pending { color:#bbb; }
+.auto-name.not-found { color:#c62828; }
+.auto-name.major-name { max-width:55px; }
+.clear-btn { background:none; border:none; color:#c62828; cursor:pointer; font-size:16px; padding:2px 4px; }
+tr.filled { background:#e8f5e9; }
+.modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.4); z-index:200; justify-content:center; align-items:center; }
+.modal-overlay.show { display:flex; }
+.modal { background:#fff; border-radius:12px; padding:24px; max-width:400px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.15); }
+.modal h3 { margin-bottom:12px; color:#c62828; }
+.modal p { font-size:13px; color:#666; margin-bottom:12px; }
+.modal input { width:100%; padding:10px; border:2px solid #e0e5ec; border-radius:6px; font-size:14px; margin-bottom:12px; }
+.modal .btns { display:flex; gap:8px; justify-content:flex-end; }
+@media (max-width:768px) {
+  .top-inner { padding:8px 12px; }
+  .top-inner .sys-name { font-size:13px; }
+  .action-bar { padding:8px 12px; }
+  .btn { padding:8px 14px; font-size:13px; }
+  .table-scroll { border-radius:6px; }
+  th { font-size:10px; padding:6px 2px; }
+  td { padding:3px 2px; }
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <div class="top-inner">
+    <div class="sys-name">🏫 陕西省高考志愿模拟填报系统</div>
+    <div class="user-info">
+      <span id="userDisplay">——</span>
+      <a href="guide.html">📖 报考指南</a>
+      <a href="plan.html">📋 招生计划</a>
+      <a href="history.html">📈 历年数据</a>
+      <a href="admin.html" id="adminLink" style="display:none;">⚙️ 管理</a>
+      <button onclick="logout()">退出</button>
+    </div>
+  </div>
+</div>
+
+<div class="disclaimer">
+  ⚠️ 免责声明：本系统为模拟填报练习，数据和规则仅供参考，正式填报请登录陕西省教育考试院官网。
+</div>
+
+<div class="locked-banner" id="lockedBanner" style="display:none">
+  <div class="lock-text">🔒 模拟志愿已确认 <span style="font-size:11px;color:#ccc;">（如需练习，可回档重新填报）</span></div>
+  <div class="lock-sub" id="lockTime"></div>
+</div>
+
+<div class="action-bar" id="actionBar">
+  <div class="status-text">已填写: <span id="filledCount">0</span>/45 <span id="saveStatus" style="margin-left:10px;color:#2b6e3b;font-size:11px;"></span></div>
+  <div class="btns">
+    <button class="btn btn-save" id="saveBtn" onclick="saveLocal()">💾 保存到本地</button>
+    <button class="btn btn-confirm" id="confirmBtn" onclick="showConfirm()">✅ 确认志愿</button>
+  </div>
+</div>
+
+<div class="helper-panel">
+  <div class="helper-toggle" onclick="toggleHelper()">🔍 代码查询（搜院校/专业） <span id="helperArrow">▼</span></div>
+  <div class="helper-body" id="helperBody">
+    <input type="text" id="helperInput" placeholder="输入院校名或代码，如『铁道』『8119』" oninput="doSearch()">
+    <div class="helper-results" id="helperResults"></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>序号</th>
+          <th>院校代号</th><th>院校名称</th>
+          <th>专业组代号</th><th>专业组名称</th>
+          <th>专业1</th><th>专业2</th><th>专业3</th><th>专业4</th><th>专业5</th><th>专业6</th>
+          <th>调剂</th><th></th>
+        </tr>
+      </thead>
+      <tbody id="volBody"></tbody>
+    </table>
+  </div>
+
+  <div class="action-bar" id="actionBar2" style="margin-top:12px;border-radius:8px;">
+    <div class="status-text">共45个院校专业组志愿 · 每个专业组可填6个专业</div>
+    <div class="btns">
+      <button class="btn btn-save" id="saveBtn2" onclick="saveLocal()">💾 保存到本地</button>
+      <button class="btn btn-confirm" id="confirmBtn2" onclick="showConfirm()">✅ 确认志愿</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h3>⚠️ 确认提交志愿</h3>
+    <p>确认后志愿将<b>锁定不可修改</b>。<br><span style="color:#999;">（此为模拟练习，实际正式填报确认后不可更改）</span></p>
+    <input type="text" id="confirmInput" placeholder="输入『确认』以继续">
+    <div class="btns">
+      <button class="btn" onclick="hideConfirm()" style="background:#e0e0e0;">取消</button>
+      <button class="btn btn-danger" onclick="doConfirm()">✅ 确认提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let CONFIRMED = false;
+let schoolCache = {};
+let groupCache = {};
+
+async function init() {
+  try {
+    const r = await fetch('/api/me');
+    if (!r.ok) { window.location.href = '/login.html'; return; }
+    const d = await r.json();
+    document.getElementById('userDisplay').textContent = d.display_name || d.username;
+    if (d.is_admin) { document.getElementById('adminLink').style.display = 'inline-block'; }
+  } catch(e) { window.location.href = '/login.html'; return; }
+  checkConfirmed();
+  buildTable();
+  loadLocal();
+}
+
+function checkConfirmed() {
+  const c = localStorage.getItem('volunteer_confirmed');
+  if (c) {
+    CONFIRMED = true;
+    document.getElementById('lockedBanner').style.display = 'block';
+    document.getElementById('lockTime').textContent = '锁定时间：' + c;
+    var rollbackHtml = '<button class="btn btn-rollback" onclick="doRollback()" title="模拟系统允许回退练习">🔄 回档（重新填报）</button>';
+    rollbackHtml += '<span style="font-size:11px;color:#e65100;margin-left:8px;">⚠ 仅限模拟练习。正式填报告不可修改！</span>';
+    ['saveBtn','confirmBtn','saveBtn2','confirmBtn2'].forEach(function(id) {
+      var b = document.getElementById(id); if (b) b.disabled = true;
+    });
+    document.getElementById('actionBar').querySelector('.btns').innerHTML = '<span style="color:#2b6e3b;font-weight:600;">🔒 已确认</span> ' + rollbackHtml;
+    document.getElementById('actionBar2').querySelector('.btns').innerHTML = '<span style="color:#2b6e3b;font-weight:600;">🔒 已确认</span> ' + rollbackHtml;
+  }
+}
+
+function buildTable() {
+  let rows = '';
+  for (let i = 1; i <= 45; i++) {
+    rows += '<tr id="row-'+i+'"><td class="order">'+i+'</td>'+
+      '<td><input type="text" class="code-school" id="sc-'+i+'" maxlength="4" inputmode="numeric" onblur="lookupSchool('+i+')" '+(CONFIRMED?'disabled':'')+'></td>'+
+      '<td class="auto-name pending" id="sn-'+i+'"></td>'+
+      '<td><input type="text" class="code-group" id="gc-'+i+'" maxlength="3" inputmode="numeric" onblur="lookupGroup('+i+')" '+(CONFIRMED?'disabled':'')+'></td>'+
+      '<td class="auto-name pending" id="gn-'+i+'"></td>';
+    for (let j = 1; j <= 6; j++) {
+      rows += '<td><input type="text" class="code-major" id="m'+j+'-'+i+'" maxlength="2" inputmode="numeric" onblur="lookupMajor('+i+','+j+')" '+(CONFIRMED?'disabled':'')+'><div class="auto-name pending major-name" id="mn'+j+'-'+i+'"></div></td>';
+    }
+    rows += '<td><input type="checkbox" id="adj-'+i+'" '+(CONFIRMED?'disabled':'')+'></td>'+
+      '<td><button class="clear-btn" onclick="clearRow('+i+')" title="清除此行" '+(CONFIRMED?'disabled':'')+'>✕</button></td></tr>';
+  }
+  document.getElementById('volBody').innerHTML = rows;
+}
+
+function clearRow(order) {
+  document.getElementById('sc-'+order).value = '';
+  document.getElementById('sn-'+order).textContent = ''; document.getElementById('sn-'+order).className = 'auto-name pending';
+  document.getElementById('gc-'+order).value = '';
+  document.getElementById('gn-'+order).textContent = ''; document.getElementById('gn-'+order).className = 'auto-name pending';
+  for (let j = 1; j <= 6; j++) {
+    document.getElementById('m'+j+'-'+order).value = '';
+    document.getElementById('mn'+j+'-'+order).textContent = '';
+    document.getElementById('mn'+j+'-'+order).className = 'auto-name pending major-name';
+  }
+  document.getElementById('adj-'+order).checked = false;
+  document.getElementById('row-'+order).classList.remove('filled');
+  updateFilledCount();
+}
+
+async function lookupSchool(order) {
+  const code = document.getElementById('sc-'+order).value.trim();
+  const nc = document.getElementById('sn-'+order);
+  document.getElementById('gc-'+order).value = ''; document.getElementById('gn-'+order).textContent = '';
+  for (let j=1;j<=6;j++) document.getElementById('m'+j+'-'+order).value = '';
+  if (!code || code.length !== 4) { nc.textContent = ''; nc.className = 'auto-name pending'; return; }
+  try {
+    const r = await fetch('/api/lookup/school/'+code); const s = await r.json();
+    if (s) { nc.textContent = s.name; nc.className = 'auto-name'; nc.title = s.name; schoolCache[s.id] = s; }
+    else { nc.textContent = '无效院校代号'; nc.className = 'auto-name not-found'; }
+  } catch(e) { nc.textContent = '查询失败'; nc.className = 'auto-name not-found'; }
+}
+
+async function lookupGroup(order) {
+  const sc = document.getElementById('sc-'+order).value.trim();
+  const gc = document.getElementById('gc-'+order).value.trim();
+  const nc = document.getElementById('gn-'+order);
+  for (let j=1;j<=6;j++) { document.getElementById('m'+j+'-'+order).value = ''; document.getElementById('mn'+j+'-'+order).textContent = ''; }
+  if (!gc || gc.length !== 3 || !sc) { nc.textContent = ''; nc.className = 'auto-name pending'; return; }
+  let sid = null;
+  for (const [k,v] of Object.entries(schoolCache)) { if (v.code === sc) { sid = k; break; } }
+  if (!sid) { try { const r = await fetch('/api/lookup/school/'+sc); const s = await r.json(); if (s) { sid = s.id; schoolCache[s.id]=s; } } catch(e){} }
+  if (!sid) { nc.textContent = '请先输入有效院校'; nc.className = 'auto-name not-found'; return; }
+  try {
+    const r = await fetch('/api/lookup/group/'+sid+'/'+gc); const g = await r.json();
+    if (g) { nc.textContent = g.group_name+(g.subject_requirement?' ['+g.subject_requirement+']':''); nc.className = 'auto-name'; nc.title = g.group_name; groupCache[g.id]=g; }
+    else { nc.textContent = '无效专业组代号'; nc.className = 'auto-name not-found'; }
+  } catch(e) { nc.textContent = '查询失败'; nc.className = 'auto-name not-found'; }
+}
+
+async function lookupMajor(order, idx) {
+  const code = document.getElementById('m'+idx+'-'+order).value.trim();
+  const nc = document.getElementById('mn'+idx+'-'+order);
+  if (!code || code.length !== 2) { nc.textContent = ''; nc.className = 'auto-name pending major-name'; updateFilledCount(); return; }
+  const sc = document.getElementById('sc-'+order).value.trim();
+  const gc = document.getElementById('gc-'+order).value.trim();
+  if (!gc || !sc) { nc.textContent = '请先输入院校和专业组'; nc.className = 'auto-name not-found major-name'; updateFilledCount(); return; }
+  let gid = null;
+  for (const [k,v] of Object.entries(groupCache)) { if (v.group_code===gc) { gid = parseInt(k); break; } }
+  if (!gid) {
+    let sid = null;
+    for (const [k,v] of Object.entries(schoolCache)) { if (v.code===sc) { sid = parseInt(k); break; } }
+    if (!sid) { try { const r1 = await fetch('/api/lookup/school/'+sc); const s = await r1.json(); if (s) { sid=s.id; schoolCache[s.id]=s; } } catch(e){} }
+    if (sid) { try { const r2 = await fetch('/api/lookup/group/'+sid+'/'+gc); const g = await r2.json(); if (g) { gid=g.id; groupCache[g.id]=g; } } catch(e){} }
+  }
+  if (!gid) { nc.textContent = '请先查专业组'; nc.className = 'auto-name not-found major-name'; updateFilledCount(); return; }
+  try {
+    const r = await fetch('/api/lookup/major/'+gid+'/'+code); const m = await r.json();
+    if (m) { nc.textContent = m.name; nc.className = 'auto-name major-name'; nc.title = m.name; document.getElementById('row-'+order).classList.add('filled'); }
+    else { nc.textContent = '无效代号'; nc.className = 'auto-name not-found major-name'; }
+  } catch(e) { nc.textContent = '查询失败'; nc.className = 'auto-name not-found major-name'; }
+  updateFilledCount();
+}
+
+function updateFilledCount() {
+  let cnt = 0;
+  for (let i=1;i<=45;i++) {
+    let filled = false;
+    if (document.getElementById('sc-'+i).value.trim().length===4) filled = true;
+    for (let j=1;j<=6;j++) { if (document.getElementById('m'+j+'-'+i).value.trim()) filled = true; }
+    if (filled) cnt++;
+  }
+  document.getElementById('filledCount').textContent = cnt;
+}
+
+function saveLocal() {
+  const vols = [];
+  for (let i=1;i<=45;i++) {
+    const majors = [];
+    for (let j=1;j<=6;j++) majors.push(document.getElementById('m'+j+'-'+i).value.trim());
+    vols.push({
+      order: i,
+      school: document.getElementById('sc-'+i).value.trim(),
+      group: document.getElementById('gc-'+i).value.trim(),
+      majors: majors,
+      adjust: document.getElementById('adj-'+i).checked
+    });
+  }
+  localStorage.setItem('volunteers', JSON.stringify(vols));
+  const ts = new Date().toLocaleString('zh-CN');
+  localStorage.setItem('volunteers_saved_at', ts);
+  document.getElementById('saveStatus').textContent = '✅ 已保存 ' + ts;
+  setTimeout(function(){ document.getElementById('saveStatus').textContent = ''; }, 3000);
+}
+
+function loadLocal() {
+  const raw = localStorage.getItem('volunteers');
+  if (!raw) return;
+  try {
+    const vols = JSON.parse(raw);
+    vols.forEach(function(v) {
+      if (v.school) document.getElementById('sc-'+v.order).value = v.school;
+      if (v.group) document.getElementById('gc-'+v.order).value = v.group;
+      if (v.majors) v.majors.forEach(function(m, idx) { if (m) document.getElementById('m'+(idx+1)+'-'+v.order).value = m; });
+      if (v.adjust) document.getElementById('adj-'+v.order).checked = true;
+    });
+    setTimeout(function() {
+      for (let i=1;i<=45;i++) {
+        if (document.getElementById('sc-'+i).value) lookupSchool(i);
+      }
+    }, 200);
+    setTimeout(function() {
+      for (let i=1;i<=45;i++) {
+        if (document.getElementById('gc-'+i).value) lookupGroup(i);
+      }
+    }, 400);
+    setTimeout(function() {
+      for (let i=1;i<=45;i++) {
+        for (let j=1;j<=6;j++) {
+          if (document.getElementById('m'+j+'-'+i).value) lookupMajor(i,j);
+        }
+      }
+    }, 600);
+    const sa = localStorage.getItem('volunteers_saved_at');
+    if (sa) { document.getElementById('saveStatus').textContent = '📂 已加载本地数据 ('+sa+')'; setTimeout(function(){document.getElementById('saveStatus').textContent='';},5000); }
+    updateFilledCount();
+  } catch(e) {}
+}
+
+function showConfirm() { if (CONFIRMED) return; document.getElementById('confirmInput').value = ''; document.getElementById('confirmModal').classList.add('show'); }
+function hideConfirm() { document.getElementById('confirmModal').classList.remove('show'); }
+function doConfirm() {
+  if (!document.getElementById('confirmInput').value.trim()) { alert('请输入任意内容以确认'); return; }
+  saveLocal();
+  const ts = new Date().toLocaleString('zh-CN');
+  localStorage.setItem('volunteer_confirmed', ts);
+  CONFIRMED = true;
+  hideConfirm();
+  try { fetch('/api/activity/ping', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'confirm'})}); } catch(e){}
+  alert('✅ 模拟志愿已确认！（仅本地锁定）\n\n正式填报请登录陕西省教育考试院官网。');
+  location.reload();
+}
+
+function doRollback() {
+  if (!confirm('确认回档？\n\n这将清除确认状态，允许重新填报志愿。\n\n⚠ 仅限模拟练习！正式填报志愿确认后不可修改！')) return;
+  localStorage.removeItem('volunteer_confirmed');
+  CONFIRMED = false;
+  try { fetch('/api/activity/ping', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'rollback'})}); } catch(e){}
+  alert('✅ 已回档！可以重新填报志愿。');
+  location.reload();
+}
+
+function toggleHelper() {
+  const b = document.getElementById('helperBody'), a = document.getElementById('helperArrow');
+  b.classList.contains('open') ? (b.classList.remove('open'),a.textContent='▼') : (b.classList.add('open'),a.textContent='▲');
+}
+let st;
+function doSearch() {
+  clearTimeout(st);
+  st = setTimeout(async function() {
+    const kw = document.getElementById('helperInput').value.trim();
+    const c = document.getElementById('helperResults');
+    if (!kw) { c.innerHTML=''; return; }
+    try {
+      const r = await fetch('/api/search?keyword='+encodeURIComponent(kw));
+      const d = await r.json();
+      c.innerHTML = d.length ? d.slice(0,30).map(function(i) {
+        return '<div class="row"><span class="code">['+i.school_code+']</span>'+i.school_name+' → <span class="code">组'+i.group_code+'</span>'+(i.group_name||'')+' → <span class="code">['+i.major_code+']</span>'+i.major_name+' <span style="color:#999;">招'+i.plan_count+'人 ¥'+i.tuition+'/年</span></div>';
+      }).join('') : '<div style="padding:10px;color:#999;">未找到</div>';
+    } catch(e) { c.innerHTML = '<div style="padding:10px;color:#c62828;">查询失败</div>'; }
+  }, 300);
+}
+
+async function logout() { await fetch('/api/logout',{method:'POST'}); window.location.href='/login.html'; }
+
+document.addEventListener('keydown', function(e) { if ((e.ctrlKey||e.metaKey)&&e.key==='s') { e.preventDefault(); saveLocal(); } });
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
