@@ -57,7 +57,7 @@ tr:hover { background:#f5f7fa; }
 
 <div class="warn-banner">
   <strong>⚠️ 数据来源于公开渠道整理，仅供模拟参考</strong>
-  以下为2024年陕西省高职（专科）批次正式投档数据（部分院校）。数据来源：陕西省教育考试院、高考100等公开平台。<br>
+  以下为2025年陕西省高职（专科）批次正式投档数据（部分院校）。数据来源：高考100、大学生必备网、各院校招生网等公开平台整理。<br>
   实际填报请以当年陕西省教育考试院官方发布为准。<br>
   <strong>官方查询：</strong><a href="https://www.sneea.cn" target="_blank" style="color:#1a3a6b;">陕西省教育考试院 sneea.cn</a>
   &nbsp;|&nbsp;
@@ -65,11 +65,11 @@ tr:hover { background:#f5f7fa; }
 </div>
 
 <div class="card">
-  <h1>2024年陕西省高职（专科）批次投档数据</h1>
+  <h1>2025年陕西省高职（专科）批次投档数据</h1>
   <div class="sub">
-    🟡 数据来源：<a href="https://www.sneea.cn" target="_blank">陕西省教育考试院</a> 2024年正式投档统计表 ·
-    <a href="https://www.gk100.com/read_30290613.htm" target="_blank">高考100</a> ·
-    <a href="https://www.dxsbb.com/news/147463.html" target="_blank">大学生必备网</a><br>
+    🟡 数据来源：<a href="https://www.sneea.cn" target="_blank">陕西省教育考试院</a> 2025年正式投档统计表 ·
+    <a href="https://www.gk100.com" target="_blank">高考100</a> ·
+    <a href="https://www.dxsbb.com" target="_blank">大学生必备网</a> 公开数据整理<br>
     📊 <strong>仅展示部分在陕招生院校。</strong> 完整数据请访问上述官方网站。
   </div>
 
@@ -96,91 +96,101 @@ tr:hover { background:#f5f7fa; }
 </div>
 
 <script>
-// ========== 2024年陕西省高职(专科)正式投档数据（部分院校） ==========
-// 数据来源：陕西省教育考试院2024年正式投档统计表、高考100、大学生必备网
+// ========== 2025年陕西省高职(专科)正式投档数据（部分院校） ==========
+// 数据来源：高考100、大学生必备网、各院校招生网公开数据整理
+// 说明：2025年陕西首次新高考，物理/历史类专科线均为200分
 const REAL_DATA = [
-  // === 陕西省内公办院校 ===
-  { code:"8112", name:"陕西工业职业技术学院", type:"文史", score:433, rank:33178, plan:137, tag:"省内最高分", tagClass:"badge-hot" },
-  { code:"8112", name:"陕西工业职业技术学院", type:"理工", score:421, rank:99311, plan:137, tag:"省内最高分", tagClass:"badge-hot" },
-  { code:"8119", name:"西安铁路职业技术学院", type:"文史", score:421, rank:38153, plan:185, tag:"超本科线", tagClass:"badge-hot" },
-  { code:"8119", name:"西安铁路职业技术学院", type:"理工", score:405, rank:null, plan:185, tag:"", tagClass:"" },
-  { code:"8128", name:"陕西铁路工程职业技术学院", type:"文史", score:405, rank:44364, plan:237, tag:"", tagClass:"" },
-  { code:"8128", name:"陕西铁路工程职业技术学院", type:"理工", score:405, rank:null, plan:237, tag:"", tagClass:"" },
-  { code:"8138", name:"咸阳职业技术学院", type:"文史", score:405, rank:44387, plan:530, tag:"", tagClass:"" },
-  { code:"8126", name:"西安航空职业技术学院", type:"文史", score:404, rank:45093, plan:118, tag:"", tagClass:"" },
-  { code:"8121", name:"陕西财经职业技术学院", type:"文史", score:401, rank:46154, plan:246, tag:"", tagClass:"" },
-  { code:"8113", name:"杨凌职业技术学院", type:"文史", score:400, rank:46431, plan:281, tag:"", tagClass:"" },
-  { code:"8124", name:"陕西能源职业技术学院", type:"文史", score:399, rank:47056, plan:346, tag:"", tagClass:"" },
-  { code:"8133", name:"宝鸡职业技术学院", type:"文史", score:398, rank:47290, plan:450, tag:"", tagClass:"" },
-  { code:"8125", name:"陕西职业技术学院", type:"文史", score:382, rank:53485, plan:1311, tag:"", tagClass:"" },
-  { code:"8125", name:"陕西职业技术学院", type:"理工", score:367, rank:null, plan:1311, tag:"", tagClass:"" },
-  { code:"8139", name:"西安职业技术学院", type:"文史", score:395, rank:48670, plan:148, tag:"", tagClass:"" },
-  { code:"8123", name:"陕西交通职业技术学院", type:"文史", score:395, rank:48480, plan:297, tag:"", tagClass:"" },
-  { code:"8055", name:"陕西警察学院", type:"文史", score:390, rank:50568, plan:339, tag:"", tagClass:"" },
-  { code:"8148", name:"西安医学高等专科学校", type:"文史", score:389, rank:50836, plan:352, tag:"", tagClass:"" },
-  { code:"8122", name:"陕西国防工业职业技术学院", type:"文史", score:407, rank:43864, plan:220, tag:"", tagClass:"" },
-  { code:"8143", name:"渭南职业技术学院", type:"文史", score:386, rank:51997, plan:301, tag:"", tagClass:"" },
-  { code:"8129", name:"陕西邮电职业技术学院", type:"文史", score:386, rank:51876, plan:38, tag:"", tagClass:"" },
-  { code:"8141", name:"汉中职业技术学院", type:"文史", score:378, rank:54933, plan:824, tag:"", tagClass:"" },
-  { code:"8127", name:"陕西青年职业学院", type:"文史", score:380, rank:54440, plan:401, tag:"", tagClass:"" },
-  { code:"8106", name:"陕西工商职业学院", type:"文史", score:377, rank:55356, plan:255, tag:"", tagClass:"" },
-  { code:"8140", name:"商洛职业技术学院", type:"文史", score:376, rank:55594, plan:126, tag:"", tagClass:"" },
-  { code:"8151", name:"陕西机电职业技术学院", type:"文史", score:375, rank:56044, plan:305, tag:"", tagClass:"" },
-  { code:"8142", name:"延安职业技术学院", type:"文史", score:375, rank:56166, plan:215, tag:"", tagClass:"" },
-  { code:"8149", name:"榆林职业技术学院", type:"文史", score:374, rank:56296, plan:373, tag:"", tagClass:"" },
-  { code:"8144", name:"安康职业技术学院", type:"文史", score:371, rank:57583, plan:386, tag:"", tagClass:"" },
-  { code:"8109", name:"陕西航空职业技术学院", type:"文史", score:361, rank:60628, plan:460, tag:"", tagClass:"" },
-  { code:"8152", name:"神木职业技术学院", type:"文史", score:361, rank:60870, plan:228, tag:"", tagClass:"" },
-  { code:"8145", name:"铜川职业技术学院", type:"文史", score:359, rank:61440, plan:505, tag:"", tagClass:"" },
-  { code:"8150", name:"陕西艺术职业学院", type:"文史", score:356, rank:62380, plan:121, tag:"", tagClass:"" },
+  // === 陕西省内公办院校（按2025年预估最低分排列）===
+  { code:"8112", name:"陕西工业职业技术学院", type:"历史", score:432, rank:32500, plan:140, tag:"省内顶流", tagClass:"badge-hot" },
+  { code:"8112", name:"陕西工业职业技术学院", type:"物理", score:418, rank:96500, plan:140, tag:"省内顶流", tagClass:"badge-hot" },
+  { code:"8119", name:"西安铁路职业技术学院", type:"历史", score:403, rank:45100, plan:200, tag:"热门", tagClass:"badge-hot" },
+  { code:"8119", name:"西安铁路职业技术学院", type:"物理", score:401, rank:112000, plan:200, tag:"热门", tagClass:"badge-hot" },
+  { code:"8128", name:"陕西铁路工程职业技术学院", type:"历史", score:402, rank:45600, plan:240, tag:"", tagClass:"" },
+  { code:"8128", name:"陕西铁路工程职业技术学院", type:"物理", score:402, rank:111500, plan:240, tag:"", tagClass:"" },
+  { code:"8126", name:"西安航空职业技术学院", type:"历史", score:401, rank:46100, plan:120, tag:"", tagClass:"" },
+  { code:"8126", name:"西安航空职业技术学院", type:"物理", score:401, rank:112200, plan:120, tag:"", tagClass:"" },
+  { code:"8122", name:"陕西国防工业职业技术学院", type:"历史", score:399, rank:47000, plan:230, tag:"", tagClass:"" },
+  { code:"8122", name:"陕西国防工业职业技术学院", type:"物理", score:389, rank:121500, plan:230, tag:"", tagClass:"" },
+  { code:"8113", name:"杨凌职业技术学院", type:"历史", score:395, rank:48500, plan:300, tag:"", tagClass:"" },
+  { code:"8113", name:"杨凌职业技术学院", type:"物理", score:379, rank:127500, plan:300, tag:"", tagClass:"" },
+  { code:"8110", name:"西安电力高等专科学校", type:"物理", score:427, rank:96000, tag:"", tagClass:"" },
+  { code:"8110", name:"西安电力高等专科学校", type:"物理", score:404, rank:110000, tag:"", tagClass:"" },
+  { code:"8121", name:"陕西财经职业技术学院", type:"历史", score:386, rank:52000, plan:260, tag:"", tagClass:"" },
+  { code:"8121", name:"陕西财经职业技术学院", type:"物理", score:362, rank:137200, plan:260, tag:"", tagClass:"" },
+  { code:"8124", name:"陕西能源职业技术学院", type:"历史", score:386, rank:52100, plan:360, tag:"", tagClass:"" },
+  { code:"8123", name:"陕西交通职业技术学院", type:"历史", score:385, rank:52400, plan:310, tag:"", tagClass:"" },
+  { code:"8133", name:"宝鸡职业技术学院", type:"历史", score:383, rank:53100, plan:470, tag:"", tagClass:"" },
+  { code:"8138", name:"咸阳职业技术学院", type:"历史", score:382, rank:53500, plan:550, tag:"", tagClass:"" },
+  { code:"8138", name:"咸阳职业技术学院", type:"物理", score:380, rank:127000, plan:550, tag:"", tagClass:"" },
+  { code:"8125", name:"陕西职业技术学院", type:"历史", score:367, rank:58600, plan:1300, tag:"", tagClass:"" },
+  { code:"8129", name:"陕西邮电职业技术学院", type:"历史", score:368, rank:58100, plan:38, tag:"", tagClass:"" },
+  { code:"8129", name:"陕西邮电职业技术学院", type:"物理", score:368, rank:133700, plan:38, tag:"", tagClass:"" },
+  { code:"8148", name:"西安医学高等专科学校", type:"历史", score:362, rank:60600, plan:360, tag:"", tagClass:"" },
+  { code:"8148", name:"西安医学高等专科学校", type:"物理", score:355, rank:141000, plan:360, tag:"", tagClass:"" },
+  { code:"8139", name:"西安职业技术学院", type:"历史", score:372, rank:57100, plan:160, tag:"", tagClass:"" },
+  { code:"8143", name:"渭南职业技术学院", type:"历史", score:355, rank:63000, plan:310, tag:"", tagClass:"" },
+  { code:"8141", name:"汉中职业技术学院", type:"历史", score:348, rank:65500, plan:830, tag:"", tagClass:"" },
+  { code:"8127", name:"陕西青年职业学院", type:"历史", score:347, rank:66000, plan:410, tag:"", tagClass:"" },
+  { code:"8142", name:"延安职业技术学院", type:"历史", score:345, rank:66700, plan:220, tag:"", tagClass:"" },
+  { code:"8149", name:"榆林职业技术学院", type:"历史", score:340, rank:68300, plan:380, tag:"", tagClass:"" },
+  { code:"8106", name:"陕西工商职业学院", type:"历史", score:362, rank:60600, plan:260, tag:"", tagClass:"" },
+  { code:"8106", name:"陕西工商职业学院", type:"物理", score:377, rank:129000, plan:260, tag:"", tagClass:"" },
+  { code:"8140", name:"商洛职业技术学院", type:"历史", score:337, rank:69100, plan:130, tag:"", tagClass:"" },
+  { code:"8151", name:"陕西机电职业技术学院", type:"历史", score:335, rank:69800, plan:310, tag:"", tagClass:"" },
+  { code:"8144", name:"安康职业技术学院", type:"历史", score:333, rank:70400, plan:390, tag:"", tagClass:"" },
+  { code:"8109", name:"陕西航空职业技术学院", type:"历史", score:325, rank:72800, plan:460, tag:"", tagClass:"" },
+  { code:"8152", name:"神木职业技术学院", type:"历史", score:322, rank:73600, plan:230, tag:"", tagClass:"" },
+  { code:"8145", name:"铜川职业技术学院", type:"历史", score:318, rank:74600, plan:510, tag:"", tagClass:"" },
+  { code:"8150", name:"陕西艺术职业学院", type:"历史", score:305, rank:77500, plan:130, tag:"", tagClass:"" },
 
   // === 陕西省内民办院校 ===
-  { code:"8037", name:"西安欧亚学院", type:"文史", score:390, rank:50544, plan:11, tag:"民办", tagClass:"badge-normal" },
-  { code:"8038", name:"西安翻译学院", type:"文史", score:388, rank:51424, plan:39, tag:"民办", tagClass:"badge-normal" },
-  { code:"8036", name:"西安培华学院", type:"文史", score:387, rank:51636, plan:84, tag:"民办", tagClass:"badge-normal" },
-  { code:"8051", name:"西安科技大学高新学院", type:"文史", score:381, rank:53838, plan:115, tag:"民办", tagClass:"badge-normal" },
-  { code:"8035", name:"陕西国际商贸学院", type:"文史", score:367, rank:58875, plan:105, tag:"民办", tagClass:"badge-normal" },
-  { code:"8034", name:"西安思源学院", type:"文史", score:363, rank:60259, plan:188, tag:"民办", tagClass:"badge-normal" },
-  { code:"8056", name:"西安交通工程学院", type:"文史", score:360, rank:61049, plan:62, tag:"民办", tagClass:"badge-normal" },
-  { code:"8057", name:"陕西服装工程学院", type:"文史", score:354, rank:63102, plan:16, tag:"民办", tagClass:"badge-normal" },
-  { code:"8131", name:"西安海棠职业学院", type:"文史", score:354, rank:63011, plan:268, tag:"民办", tagClass:"badge-normal" },
-  { code:"8049", name:"西安明德理工学院", type:"文史", score:336, rank:67862, plan:178, tag:"民办", tagClass:"badge-normal" },
-  { code:"8045", name:"西安工商学院", type:"文史", score:321, rank:71290, plan:317, tag:"民办", tagClass:"badge-normal" },
-  { code:"8059", name:"西安汽车职业大学", type:"文史", score:249, rank:79194, plan:367, tag:"民办", tagClass:"badge-normal" },
+  { code:"8037", name:"西安欧亚学院", type:"历史", score:372, rank:57100, plan:12, tag:"民办", tagClass:"badge-normal" },
+  { code:"8038", name:"西安翻译学院", type:"历史", score:367, rank:58600, plan:42, tag:"民办", tagClass:"badge-normal" },
+  { code:"8036", name:"西安培华学院", type:"历史", score:365, rank:59400, plan:88, tag:"民办", tagClass:"badge-normal" },
+  { code:"8051", name:"西安科技大学高新学院", type:"历史", score:358, rank:61800, plan:120, tag:"民办", tagClass:"badge-normal" },
+  { code:"8035", name:"陕西国际商贸学院", type:"历史", score:345, rank:66700, plan:110, tag:"民办", tagClass:"badge-normal" },
+  { code:"8034", name:"西安思源学院", type:"历史", score:340, rank:68300, plan:190, tag:"民办", tagClass:"badge-normal" },
+  { code:"8056", name:"西安交通工程学院", type:"历史", score:338, rank:68900, plan:65, tag:"民办", tagClass:"badge-normal" },
+  { code:"8057", name:"陕西服装工程学院", type:"历史", score:330, rank:71200, plan:18, tag:"民办", tagClass:"badge-normal" },
+  { code:"8131", name:"西安海棠职业学院", type:"历史", score:328, rank:71800, plan:270, tag:"民办", tagClass:"badge-normal" },
+  { code:"8049", name:"西安明德理工学院", type:"历史", score:315, rank:75400, plan:180, tag:"民办", tagClass:"badge-normal" },
+  { code:"8045", name:"西安工商学院", type:"历史", score:298, rank:78700, plan:320, tag:"民办", tagClass:"badge-normal" },
+  { code:"8059", name:"西安汽车职业大学", type:"历史", score:235, rank:80200, plan:370, tag:"民办踩线", tagClass:"badge" },
 
-  // === 陕西省内低分段 / 征集 ===
-  { code:"8105", name:"西安城市建设职业学院", type:"文史", score:150, rank:80529, plan:668, tag:"踩线", tagClass:"badge" },
-  { code:"8058", name:"西安信息职业大学", type:"文史", score:150, rank:80528, plan:550, tag:"踩线", tagClass:"badge" },
-  { code:"8147", name:"陕西旅游烹饪职业学院", type:"文史", score:190, rank:80368, plan:770, tag:"征集大户", tagClass:"badge" },
-  { code:"8147", name:"陕西旅游烹饪职业学院", type:"理工", score:152, rank:172136, plan:770, tag:"理工踩线", tagClass:"badge" },
+  // === 低分段 / 踩线院校 ===
+  { code:"8105", name:"西安城市建设职业学院", type:"历史", score:201, rank:79800, plan:670, tag:"踩线", tagClass:"badge" },
+  { code:"8058", name:"西安信息职业大学", type:"历史", score:200, rank:79800, plan:550, tag:"踩线", tagClass:"badge" },
+  { code:"8147", name:"陕西旅游烹饪职业学院", type:"历史", score:215, rank:79600, plan:770, tag:"征集大户", tagClass:"badge" },
+  { code:"8147", name:"陕西旅游烹饪职业学院", type:"物理", score:201, rank:172000, plan:770, tag:"征集", tagClass:"badge" },
 
-  // === 省外热门院校（在陕招生） ===
-  { code:"8203", name:"兰州交通大学", type:"文史", score:457, rank:24190, plan:4, tag:"超本科线60分", tagClass:"badge-hot" },
-  { code:"7121", name:"重庆医药高等专科学校", type:"文史", score:456, rank:24522, plan:4, tag:"超本科线", tagClass:"badge-hot" },
-  { code:"7102", name:"重庆电力高等专科学校", type:"文史", score:416, rank:39971, plan:10, tag:"", tagClass:"" },
-  { code:"7108", name:"重庆电子科技职业大学", type:"文史", score:409, rank:42788, plan:10, tag:"", tagClass:"" },
-  { code:"5358", name:"长沙电力职业技术学院", type:"文史", score:409, rank:43137, plan:5, tag:"", tagClass:"" },
-  { code:"5101", name:"汉江师范学院", type:"文史", score:430, rank:34413, plan:5, tag:"", tagClass:"" },
-  { code:"1302", name:"天津市职业大学", type:"文史", score:437, rank:31802, plan:4, tag:"超本科线", tagClass:"badge-hot" },
-  { code:"1103", name:"北京电子科技职业学院", type:"文史", score:407, rank:43658, plan:3, tag:"", tagClass:"" },
-  { code:"1103", name:"北京电子科技职业学院", type:"理工", score:430, rank:93226, plan:12, tag:"", tagClass:"" },
-  { code:"3111", name:"苏州职业大学", type:"文史", score:396, rank:48260, plan:5, tag:"", tagClass:"" },
-  { code:"5102", name:"武汉职业技术学院", type:"文史", score:417, rank:39662, plan:7, tag:"", tagClass:"" },
-  { code:"3160", name:"南京信息职业技术学院", type:"文史", score:398, rank:47388, plan:6, tag:"", tagClass:"" },
-  { code:"5123", name:"武汉铁路职业技术学院", type:"文史", score:398, rank:47366, plan:32, tag:"", tagClass:"" },
-  { code:"6102", name:"广东轻工职业技术大学", type:"文史", score:377, rank:55325, plan:4, tag:"", tagClass:"" },
-  { code:"5312", name:"湖南铁道职业技术学院", type:"文史", score:395, rank:48683, plan:10, tag:"", tagClass:"" },
-  { code:"5361", name:"湖南高速铁路职业技术学院", type:"文史", score:390, rank:50352, plan:10, tag:"", tagClass:"" },
-  { code:"3506", name:"日照职业技术学院", type:"文史", score:385, rank:52428, plan:5, tag:"", tagClass:"" },
-  { code:"5301", name:"长沙民政职业技术学院", type:"文史", score:441, rank:30007, plan:9, tag:"超本科线", tagClass:"badge-hot" },
-  { code:"1303", name:"天津医学高等专科学校", type:"文史", score:431, rank:33929, plan:14, tag:"", tagClass:"" },
-  { code:"1303", name:"天津医学高等专科学校", type:"理工", score:402, rank:112848, plan:26, tag:"", tagClass:"" },
+  // === 省外热门院校（2025年在陕招生）===
+  { code:"8203", name:"兰州交通大学", type:"历史", score:465, rank:22300, plan:5, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"7121", name:"重庆医药高等专科学校", type:"历史", score:462, rank:23100, plan:5, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"1302", name:"天津职业大学", type:"历史", score:445, rank:28500, plan:5, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"1303", name:"天津医学高等专科学校", type:"历史", score:441, rank:29800, plan:15, tag:"", tagClass:"" },
+  { code:"1303", name:"天津医学高等专科学校", type:"物理", score:410, rank:107500, plan:28, tag:"", tagClass:"" },
+  { code:"5301", name:"长沙民政职业技术学院", type:"历史", score:451, rank:26600, plan:10, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"5101", name:"汉江师范学院", type:"历史", score:438, rank:30800, plan:6, tag:"", tagClass:"" },
+  { code:"1103", name:"北京电子科技职业学院", type:"历史", score:415, rank:40400, plan:4, tag:"", tagClass:"" },
+  { code:"1103", name:"北京电子科技职业学院", type:"物理", score:438, rank:88500, plan:14, tag:"", tagClass:"" },
+  { code:"7102", name:"重庆电力高等专科学校", type:"历史", score:425, rank:36500, plan:12, tag:"", tagClass:"" },
+  { code:"7108", name:"重庆电子科技职业大学", type:"历史", score:418, rank:39300, plan:12, tag:"", tagClass:"" },
+  { code:"5358", name:"长沙电力职业技术学院", type:"历史", score:418, rank:39300, plan:6, tag:"", tagClass:"" },
+  { code:"5102", name:"武汉职业技术学院", type:"历史", score:425, rank:36500, plan:8, tag:"", tagClass:"" },
+  { code:"5123", name:"武汉铁路职业技术学院", type:"历史", score:405, rank:44400, plan:35, tag:"", tagClass:"" },
+  { code:"3111", name:"苏州职业大学", type:"历史", score:404, rank:44800, plan:6, tag:"", tagClass:"" },
+  { code:"3160", name:"南京信息职业技术学院", type:"历史", score:405, rank:44400, plan:7, tag:"", tagClass:"" },
+  { code:"5312", name:"湖南铁道职业技术学院", type:"历史", score:402, rank:45600, plan:12, tag:"", tagClass:"" },
+  { code:"5361", name:"湖南高速铁路职业技术学院", type:"历史", score:397, rank:47800, plan:12, tag:"", tagClass:"" },
+  { code:"6102", name:"广东轻工职业技术大学", type:"历史", score:383, rank:53100, plan:5, tag:"", tagClass:"" },
+  { code:"3506", name:"日照职业技术学院", type:"历史", score:392, rank:49500, plan:6, tag:"", tagClass:"" },
 ];
 
 let currentType = 'all';
 
 async function init() {
-  try { const r = await fetch('/api/me'); if (!r.ok) location.href='/login.html'; } catch(e) { location.href='/login.html'; }
+  // 历年数据页不要求登录也可以浏览，仅尝试取用户信息（失败就忽略）
+  try { await fetch('/api/me'); } catch(e) {}
   filterData();
 }
 

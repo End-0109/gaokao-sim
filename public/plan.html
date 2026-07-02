@@ -73,7 +73,7 @@ tr:hover { background:#f5f7fa; }
 
 <script>
 let cp=1, tp=1;
-async function init() { try { const r = await fetch('/api/me'); if (!r.ok) location.href='/login.html'; } catch(e) { location.href='/login.html'; } await search(1); }
+async function init() { try { await fetch('/api/me'); } catch(e) {} await search(1); }
 async function search(p) {
   cp=p;
   const kw=document.getElementById('searchInput').value.trim();
