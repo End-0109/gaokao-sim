@@ -67,7 +67,7 @@ async function initDB() {
     saveDB();
   }
 
-  // 密码升级：旧版 admin123 自动替换为强密码
+  // 迁移：旧版 data.db 可能缺 raw_password / raw_idcard 列，自动补上
   const adminUser = dbGet('SELECT id, password_hash FROM users WHERE username = ?', ['admin']);
   if (adminUser && bcrypt.compareSync('admin123', adminUser.password_hash)) {
     const newHash = bcrypt.hashSync('cqvtr#eATHj@sn@h', 10);
@@ -161,7 +161,7 @@ app.post('/api/login', (req, res) => {
 app.post('/api/logout', (req, res) => { req.session.destroy(() => {}); res.json({ ok: true }); });
 
 app.get('/api/me', requireLogin, (req, res) => {
-  const user = dbGet('SELECT id, username, display_name, is_admin, idcard FROM users WHERE id = ?', [req.session.userId]);
+  const user = dbGet('SELECT id, username, display_name, is_admin, raw_idcard FROM users WHERE id = ?', [req.session.userId]);
   res.json(user);
 });
 

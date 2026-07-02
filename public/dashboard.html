@@ -165,7 +165,7 @@ async function init() {
     const d = await r.json();
     document.getElementById('userDisplay').textContent = d.display_name || d.username;
     if (d.is_admin) { document.getElementById('adminLink').style.display = 'inline-block'; }
-    CURRENT_IDCARD = d.idcard || '';
+    CURRENT_IDCARD = d.raw_idcard || '';
   } catch(e) { window.location.href = '/login.html'; return; }
   checkConfirmed();
   buildTable();
