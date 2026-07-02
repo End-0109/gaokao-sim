@@ -263,7 +263,7 @@ async function lookupMajor(order, idx) {
   if (!gid) { nc.textContent = '请先查专业组'; nc.className = 'auto-name not-found major-name'; updateFilledCount(); return; }
   try {
     const r = await fetch('/api/lookup/major/'+gid+'/'+code); const m = await r.json();
-    if (m) { nc.textContent = m.name; nc.className = 'auto-name major-name'; nc.title = m.name; document.getElementById('row-'+order).classList.add('filled'); }
+    if (m) { nc.textContent = m.major_name; nc.className = 'auto-name major-name'; nc.title = m.major_name; document.getElementById('row-'+order).classList.add('filled'); }
     else { nc.textContent = '无效代号'; nc.className = 'auto-name not-found major-name'; }
   } catch(e) { nc.textContent = '查询失败'; nc.className = 'auto-name not-found major-name'; }
   updateFilledCount();
