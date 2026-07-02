@@ -48,10 +48,12 @@ input[type="text"].code-major { width:36px; font-size:11px; }
 input[type="text"] { padding:5px; border:2px solid #e0e5ec; border-radius:4px; text-align:center; font-size:13px; }
 input[type="text"]:focus { border-color:#1a3a6b; outline:none; }
 input[type="text"]:disabled { background:#f5f5f5; color:#999; cursor:not-allowed; }
-.auto-name { font-size:10px; color:#2b6e3b; margin-top:1px; max-width:70px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.auto-name { font-size:10px; color:#2b6e3b; margin-top:2px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; line-height:1.2; }
 .auto-name.pending { color:#bbb; }
 .auto-name.not-found { color:#c62828; }
-.auto-name.major-name { max-width:55px; }
+.auto-name.major-name { max-width:70px; }
+.auto-name.school-name { font-size:11px; font-weight:600; max-width:170px; }
+.auto-name.group-name { font-size:10px; max-width:160px; }
 .clear-btn { background:none; border:none; color:#c62828; cursor:pointer; font-size:16px; padding:2px 4px; }
 tr.filled { background:#e8f5e9; }
 .modal-overlay { display:none; position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,0.4); z-index:200; justify-content:center; align-items:center; }
@@ -141,7 +143,8 @@ tr.filled { background:#e8f5e9; }
   <div class="modal">
     <h3>⚠️ 确认提交志愿</h3>
     <p>确认后志愿将<b>锁定不可修改</b>。<br><span style="color:#999;">（此为模拟练习，实际正式填报确认后不可更改）</span></p>
-    <input type="text" id="confirmInput" placeholder="输入『确认』以继续">
+    <input type="text" id="confirmInput" placeholder="请输入您账号绑定的18位身份证号" maxlength="18">
+<p id="confirmErr" style="color:#c62828;font-size:12px;margin-top:6px;display:none;"></p>
     <div class="btns">
       <button class="btn" onclick="hideConfirm()" style="background:#e0e0e0;">取消</button>
       <button class="btn btn-danger" onclick="doConfirm()">✅ 确认提交</button>
@@ -151,6 +154,7 @@ tr.filled { background:#e8f5e9; }
 
 <script>
 let CONFIRMED = false;
+let CURRENT_IDCARD = '';
 let schoolCache = {};
 let groupCache = {};
 
@@ -161,6 +165,7 @@ async function init() {
     const d = await r.json();
     document.getElementById('userDisplay').textContent = d.display_name || d.username;
     if (d.is_admin) { document.getElementById('adminLink').style.display = 'inline-block'; }
+    CURRENT_IDCARD = d.idcard || '';
   } catch(e) { window.location.href = '/login.html'; return; }
   checkConfirmed();
   buildTable();
@@ -188,9 +193,9 @@ function buildTable() {
   for (let i = 1; i <= 45; i++) {
     rows += '<tr id="row-'+i+'"><td class="order">'+i+'</td>'+
       '<td><input type="text" class="code-school" id="sc-'+i+'" maxlength="4" inputmode="numeric" onblur="lookupSchool('+i+')" '+(CONFIRMED?'disabled':'')+'></td>'+
-      '<td class="auto-name pending" id="sn-'+i+'"></td>'+
+      '<td class="auto-name pending school-name" id="sn-'+i+'"></td>'+
       '<td><input type="text" class="code-group" id="gc-'+i+'" maxlength="3" inputmode="numeric" onblur="lookupGroup('+i+')" '+(CONFIRMED?'disabled':'')+'></td>'+
-      '<td class="auto-name pending" id="gn-'+i+'"></td>';
+      '<td class="auto-name pending group-name" id="gn-'+i+'"></td>';
     for (let j = 1; j <= 6; j++) {
       rows += '<td><input type="text" class="code-major" id="m'+j+'-'+i+'" maxlength="2" inputmode="numeric" onblur="lookupMajor('+i+','+j+')" '+(CONFIRMED?'disabled':'')+'><div class="auto-name pending major-name" id="mn'+j+'-'+i+'"></div></td>';
     }
@@ -299,12 +304,12 @@ function saveLocal() {
   document.getElementById('saveStatus').textContent = '✅ 已保存 ' + ts;
   setTimeout(function(){ document.getElementById('saveStatus').textContent = ''; }, 3000);
 }
-
 async function loadLocal() {
   const raw = localStorage.getItem('volunteers');
   if (!raw) return;
   try {
     const vols = JSON.parse(raw);
+    // 第一步：恢复所有 input 值
     vols.forEach(function(v) {
       if (v.school) document.getElementById('sc-'+v.order).value = v.school;
       if (v.group) document.getElementById('gc-'+v.order).value = v.group;
@@ -312,31 +317,54 @@ async function loadLocal() {
       if (v.adjust) document.getElementById('adj-'+v.order).checked = true;
     });
     const filled = vols.filter(v => v.school || v.group || (v.majors && v.majors.some(m => m)));
+    // 第二步：只查院校（lookupSchool 不清空 input）
+    for (const v of filled) { if (v.school) await lookupSchool(v.order); }
+    await new Promise(r => setTimeout(r, 200));
+    // 第三步：用直接 fetch 取专业组名称（不调 lookupGroup，因为 lookupGroup 会清空 6 个专业 input）
     for (const v of filled) {
-      if (v.school) await lookupSchool(v.order);
-    }
-    await new Promise(r => setTimeout(r, 300));
-    for (const v of filled) {
-      if (v.group) await lookupGroup(v.order);
-    }
-    await new Promise(r => setTimeout(r, 300));
-    for (const v of filled) {
-      if (v.majors) {
-        for (let j = 0; j < v.majors.length; j++) {
-          if (v.majors[j]) await lookupMajor(v.order, j + 1);
+      if (!v.group || !v.school) continue;
+      try {
+        const sr = await fetch('/api/lookup/school/'+v.school); const s = await sr.json();
+        if (s) {
+          const gr = await fetch('/api/lookup/group/'+s.id+'/'+v.group); const g = await gr.json();
+          if (g) {
+            const gn = document.getElementById('gn-'+v.order);
+            gn.textContent = g.group_name+(g.subject_requirement?' ['+g.subject_requirement+']':'');
+            gn.className = 'auto-name group-name'; gn.title = g.group_name;
+            groupCache[g.id] = g;
+            // 查所有专业
+            for (let j = 0; j < v.majors.length; j++) {
+              if (!v.majors[j]) continue;
+              const mr = await fetch('/api/lookup/major/'+g.id+'/'+v.majors[j]); const m = await mr.json();
+              if (m) {
+                const mn = document.getElementById('mn'+(j+1)+'-'+v.order);
+                mn.textContent = m.major_name; mn.className = 'auto-name major-name'; mn.title = m.major_name;
+              }
+            }
+          }
         }
-      }
+      } catch(e) {}
     }
+    // 第四步：再次防御性恢复 input（以防被覆盖）
+    vols.forEach(function(v) {
+      if (v.school) document.getElementById('sc-'+v.order).value = v.school;
+      if (v.group) document.getElementById('gc-'+v.order).value = v.group;
+      if (v.majors) v.majors.forEach(function(m, idx) { if (m) document.getElementById('m'+(idx+1)+'-'+v.order).value = m; });
+    });
     const sa = localStorage.getItem('volunteers_saved_at');
-    if (sa) { document.getElementById('saveStatus').textContent = '✅ 已加载本地数据 ('+sa+')'; setTimeout(function(){document.getElementById('saveStatus').textContent='';},5000); }
+    if (sa) { document.getElementById('saveStatus').textContent = '已加载本地数据 ('+sa+')'; setTimeout(function(){document.getElementById('saveStatus').textContent='';},5000); }
     updateFilledCount();
   } catch(e) { console.error('loadLocal error:', e); }
 }
-
 function showConfirm() { if (CONFIRMED) return; document.getElementById('confirmInput').value = ''; document.getElementById('confirmModal').classList.add('show'); }
 function hideConfirm() { document.getElementById('confirmModal').classList.remove('show'); }
 function doConfirm() {
-  if (!document.getElementById('confirmInput').value.trim()) { alert('请输入任意内容以确认'); return; }
+  const input = document.getElementById('confirmInput').value.trim();
+  const errEl = document.getElementById('confirmErr');
+  if (!input) { errEl.textContent = '请输入身份证号'; errEl.style.display='block'; return; }
+  if (!/^\d{17}[\dXx]$/.test(input)) { errEl.textContent = '身份证号格式不正确（应为18位）'; errEl.style.display='block'; return; }
+  if (input !== (CURRENT_IDCARD||'')) { errEl.textContent = '身份证号与本账号绑定的不一致，请重新输入'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
   saveLocal();
   const ts = new Date().toLocaleString('zh-CN');
   localStorage.setItem('volunteer_confirmed', ts);

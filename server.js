@@ -161,7 +161,7 @@ app.post('/api/login', (req, res) => {
 app.post('/api/logout', (req, res) => { req.session.destroy(() => {}); res.json({ ok: true }); });
 
 app.get('/api/me', requireLogin, (req, res) => {
-  const user = dbGet('SELECT id, username, display_name, is_admin FROM users WHERE id = ?', [req.session.userId]);
+  const user = dbGet('SELECT id, username, display_name, is_admin, idcard FROM users WHERE id = ?', [req.session.userId]);
   res.json(user);
 });
 
