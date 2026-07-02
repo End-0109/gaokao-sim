@@ -300,7 +300,7 @@ function saveLocal() {
   setTimeout(function(){ document.getElementById('saveStatus').textContent = ''; }, 3000);
 }
 
-function loadLocal() {
+async function loadLocal() {
   const raw = localStorage.getItem('volunteers');
   if (!raw) return;
   try {
@@ -311,27 +311,26 @@ function loadLocal() {
       if (v.majors) v.majors.forEach(function(m, idx) { if (m) document.getElementById('m'+(idx+1)+'-'+v.order).value = m; });
       if (v.adjust) document.getElementById('adj-'+v.order).checked = true;
     });
-    setTimeout(function() {
-      for (let i=1;i<=45;i++) {
-        if (document.getElementById('sc-'+i).value) lookupSchool(i);
-      }
-    }, 200);
-    setTimeout(function() {
-      for (let i=1;i<=45;i++) {
-        if (document.getElementById('gc-'+i).value) lookupGroup(i);
-      }
-    }, 400);
-    setTimeout(function() {
-      for (let i=1;i<=45;i++) {
-        for (let j=1;j<=6;j++) {
-          if (document.getElementById('m'+j+'-'+i).value) lookupMajor(i,j);
+    const filled = vols.filter(v => v.school || v.group || (v.majors && v.majors.some(m => m)));
+    for (const v of filled) {
+      if (v.school) await lookupSchool(v.order);
+    }
+    await new Promise(r => setTimeout(r, 300));
+    for (const v of filled) {
+      if (v.group) await lookupGroup(v.order);
+    }
+    await new Promise(r => setTimeout(r, 300));
+    for (const v of filled) {
+      if (v.majors) {
+        for (let j = 0; j < v.majors.length; j++) {
+          if (v.majors[j]) await lookupMajor(v.order, j + 1);
         }
       }
-    }, 600);
+    }
     const sa = localStorage.getItem('volunteers_saved_at');
-    if (sa) { document.getElementById('saveStatus').textContent = '📂 已加载本地数据 ('+sa+')'; setTimeout(function(){document.getElementById('saveStatus').textContent='';},5000); }
+    if (sa) { document.getElementById('saveStatus').textContent = '✅ 已加载本地数据 ('+sa+')'; setTimeout(function(){document.getElementById('saveStatus').textContent='';},5000); }
     updateFilledCount();
-  } catch(e) {}
+  } catch(e) { console.error('loadLocal error:', e); }
 }
 
 function showConfirm() { if (CONFIRMED) return; document.getElementById('confirmInput').value = ''; document.getElementById('confirmModal').classList.add('show'); }

@@ -9,80 +9,216 @@
 body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background:#eef2f6; min-height:100vh; font-size:14px; color:#333; }
 .top-bar { background: linear-gradient(135deg,#1a3a6b,#1f4d8c); color:#fff; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
 .top-bar .sys-name { font-size:15px; font-weight:700; }
-.top-bar a { color:#bdd4f0; text-decoration:none; font-size:12px; }
+.top-bar .links, .top-bar a { color:#bdd4f0; text-decoration:none; font-size:12px; }
+.top-bar .links a + a { margin-left:12px; }
 .main { max-width:1100px; margin:0 auto; padding:14px; }
 .card { background:#fff; border-radius:8px; box-shadow:0 2px 12px rgba(0,0,0,0.05); padding:20px; }
 .card h1 { font-size:clamp(16px,4vw,20px); color:#1a3a6b; margin-bottom:4px; }
-.card .sub { font-size:12px; color:#999; margin-bottom:14px; }
-.warn-banner { background:#fff8e1; border:2px solid #ff9800; padding:8px 14px; border-radius:6px; margin-bottom:12px; font-size:12px; color:#805b00; line-height:1.6; }
-.warn-banner strong { color:#e65100; display:block; margin-bottom:2px; }
+.card .sub { font-size:12px; color:#666; margin-bottom:14px; line-height:1.8; }
+.card .sub a { color:#1a3a6b; font-weight:600; }
+.warn-banner { background:#fff8e1; border:2px solid #ff9800; padding:10px 14px; border-radius:6px; margin-bottom:14px; font-size:12px; color:#805b00; line-height:1.7; }
+.warn-banner strong { color:#e65100; }
 .search-bar { display:flex; gap:8px; margin-bottom:12px; }
 .search-bar input { flex:1; padding:8px 12px; border:2px solid #e0e5ec; border-radius:6px; font-size:14px; }
 .search-bar input:focus { border-color:#1a3a6b; outline:none; }
-.search-bar button { padding:8px 16px; background:#1a3a6b; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; }
+.search-bar button { padding:8px 16px; background:#1a3a6b; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:13px; font-weight:600; flex-shrink:0; }
 .search-bar button:hover { background:#152e56; }
+.search-bar button.secondary { background:#fff; color:#1a3a6b; border:1px solid #d8dde5; }
+.search-bar button.secondary:hover { background:#f0f3f7; }
+.tabs { display:flex; gap:0; margin-bottom:14px; border-bottom:2px solid #d8dde5; }
+.tab { padding:8px 16px; cursor:pointer; border:none; background:none; font-size:13px; font-weight:500; color:#666; border-bottom:2px solid transparent; margin-bottom:-2px; }
+.tab.active { color:#1a3a6b; border-bottom-color:#1a3a6b; font-weight:700; }
 .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
-table { width:100%; border-collapse:collapse; font-size:12px; min-width:700px; }
+table { width:100%; border-collapse:collapse; font-size:12px; min-width:800px; }
 th { background:#f0f3f7; padding:8px 6px; border-bottom:2px solid #d8dde5; text-align:center; color:#666; font-weight:500; white-space:nowrap; }
-td { padding:6px; border-bottom:1px solid #eef0f2; text-align:center; }
+td { padding:7px 6px; border-bottom:1px solid #eef0f2; text-align:center; }
 tr:hover { background:#f5f7fa; }
 .score { font-weight:700; color:#1a3a6b; }
-.rank { color:#666; font-size:10px; }
-.note-tag { display:inline-block; background:#ff9800; color:#fff; padding:1px 6px; border-radius:3px; font-size:10px; }
-.footer { text-align:center; padding:16px; font-size:11px; color:#999; }
-@media (max-width:768px) { .main { padding:8px; } .card { padding:12px; } .search-bar { flex-direction:column; } }
+.rank { color:#888; font-size:11px; }
+.badge { display:inline-block; padding:1px 6px; border-radius:3px; font-size:10px; font-weight:600; }
+.badge-hot { background:#ffebee; color:#c62828; }
+.badge-good { background:#e8f5e9; color:#2e7d32; }
+.badge-normal { background:#e3f2fd; color:#1565c0; }
+.footer { text-align:center; padding:20px 16px; font-size:11px; color:#999; line-height:1.8; }
+.footer a { color:#1a3a6b; text-decoration:underline; }
+@media (max-width:768px) { .main { padding:8px; } .card { padding:12px; } .search-bar { flex-direction:column; } .tabs { overflow-x:auto; } }
 </style>
 </head>
 <body>
 <div class="top-bar">
   <div class="sys-name">📈 历年录取参考</div>
-  <a href="/">← 返回填报</a>
+  <div class="links">
+    <a href="/dashboard.html">📝 志愿填报</a>
+    <a href="/guide.html">📖 报考指南</a>
+    <a href="/plan.html">📋 招生计划</a>
+  </div>
 </div>
 <div class="main">
+
 <div class="warn-banner">
-  <strong>⚠️ 全部为2025年模拟数据，非官方真实录取结果！</strong>
-  真实录取最低分、平均分、位次请查阅陕西省教育考试院官网。模拟数据仅供理解"冲稳保"策略，切勿作为真实填报依据。
+  <strong>⚠️ 数据来源于公开渠道整理，仅供模拟参考</strong>
+  以下为2024年陕西省高职（专科）批次正式投档数据（部分院校）。数据来源：陕西省教育考试院、高考100等公开平台。<br>
+  实际填报请以当年陕西省教育考试院官方发布为准。<br>
+  <strong>官方查询：</strong><a href="https://www.sneea.cn" target="_blank" style="color:#1a3a6b;">陕西省教育考试院 sneea.cn</a>
+  &nbsp;|&nbsp;
+  <a href="https://www.sneac.com" target="_blank" style="color:#1a3a6b;">陕西招生考试信息网 sneac.com</a>
 </div>
 
 <div class="card">
-  <h1>2025年高职（专科）批次录取参考（模拟数据）</h1>
-  <div class="sub"><span style="color:#e65100;">⚠️ 非官方真实数据</span> | <span id="recordCount">加载中…</span></div>
+  <h1>2024年陕西省高职（专科）批次投档数据</h1>
+  <div class="sub">
+    🟡 数据来源：<a href="https://www.sneea.cn" target="_blank">陕西省教育考试院</a> 2024年正式投档统计表 ·
+    <a href="https://www.gk100.com/read_30290613.htm" target="_blank">高考100</a> ·
+    <a href="https://www.dxsbb.com/news/147463.html" target="_blank">大学生必备网</a><br>
+    📊 <strong>仅展示部分在陕招生院校。</strong> 完整数据请访问上述官方网站。
+  </div>
 
   <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="搜索院校名或代号…" onkeydown="if(event.key==='Enter')loadData()">
-    <button onclick="loadData()">🔍</button>
-    <button onclick="document.getElementById('searchInput').value='';loadData()" style="background:#fff;color:#1a3a6b;border:1px solid #d8dde5;">全部</button>
+    <input type="text" id="searchInput" placeholder="搜索院校名或代号，如『铁道』『8119』" onkeydown="if(event.key==='Enter')filterData()">
+    <button onclick="filterData()">🔍 搜索</button>
+    <button onclick="document.getElementById('searchInput').value='';filterData()" class="secondary">全部</button>
   </div>
 
   <div class="table-wrap">
   <table><thead><tr>
-    <th>院校代号</th><th>院校名称</th><th>专业组</th><th>专业组名称</th>
-    <th>最低分</th><th>平均分</th><th>最高分</th><th>最低位次</th><th>招生数</th><th>备注</th>
+    <th>院校代号</th><th>院校名称</th>
+    <th>科类</th><th>最低分</th><th>最低位次</th>
+    <th>投档数</th><th>备注</th>
   </tr></thead>
-  <tbody id="historyBody"><tr><td colspan="10" style="padding:20px;color:#999;">加载中…</td></tr></tbody></table>
+  <tbody id="historyBody"></tbody></table>
   </div>
 </div>
 </div>
-<div class="footer">以上全部为模拟数据 | 真实数据：<a href="https://www.sneea.cn" target="_blank" style="color:#1a3a6b;">陕西省教育考试院</a></div>
+
+<div class="footer">
+  数据来源于公开渠道整理，仅供参考 · 实际填报以 <a href="https://www.sneea.cn" target="_blank">陕西省教育考试院</a> 当年官方发布数据为准<br>
+  本系统为模拟练习工具，志愿数据仅保存在您的浏览器本地
+</div>
 
 <script>
-async function init() { try { const r = await fetch('/api/me'); if (!r.ok) location.href='/login.html'; } catch(e) { location.href='/login.html'; } await loadData(); }
-async function loadData() {
-  const kw = document.getElementById('searchInput').value.trim();
-  let url='/api/history'; if(kw) url+='?keyword='+encodeURIComponent(kw);
-  try {
-    const r = await fetch(url); const d = await r.json();
-    document.getElementById('recordCount').textContent=`共 ${d.length} 条（全部模拟数据）`;
-    document.getElementById('historyBody').innerHTML = d.length ? d.map(row=>`<tr>
-      <td><strong>${row.school_code}</strong></td><td style="text-align:left;">${row.school_name}</td>
-      <td>${row.group_code}</td><td style="text-align:left;">${row.group_name||''}</td>
-      <td class="score">${row.min_score}</td><td>${row.avg_score}</td><td>${row.max_score}</td>
-      <td><span class="rank">${(row.min_rank||0).toLocaleString()}</span></td>
-      <td>${row.plan_count||'-'}</td>
-      <td><span class="note-tag">${row.note||'模拟数据'}</span></td>
-    </tr>`).join('') : '<tr><td colspan="10" style="padding:20px;color:#999;">无结果</td></tr>';
-  } catch(e) {}
+// ========== 2024年陕西省高职(专科)正式投档数据（部分院校） ==========
+// 数据来源：陕西省教育考试院2024年正式投档统计表、高考100、大学生必备网
+const REAL_DATA = [
+  // === 陕西省内公办院校 ===
+  { code:"8112", name:"陕西工业职业技术学院", type:"文史", score:433, rank:33178, plan:137, tag:"省内最高分", tagClass:"badge-hot" },
+  { code:"8112", name:"陕西工业职业技术学院", type:"理工", score:421, rank:99311, plan:137, tag:"省内最高分", tagClass:"badge-hot" },
+  { code:"8119", name:"西安铁路职业技术学院", type:"文史", score:421, rank:38153, plan:185, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"8119", name:"西安铁路职业技术学院", type:"理工", score:405, rank:null, plan:185, tag:"", tagClass:"" },
+  { code:"8128", name:"陕西铁路工程职业技术学院", type:"文史", score:405, rank:44364, plan:237, tag:"", tagClass:"" },
+  { code:"8128", name:"陕西铁路工程职业技术学院", type:"理工", score:405, rank:null, plan:237, tag:"", tagClass:"" },
+  { code:"8138", name:"咸阳职业技术学院", type:"文史", score:405, rank:44387, plan:530, tag:"", tagClass:"" },
+  { code:"8126", name:"西安航空职业技术学院", type:"文史", score:404, rank:45093, plan:118, tag:"", tagClass:"" },
+  { code:"8121", name:"陕西财经职业技术学院", type:"文史", score:401, rank:46154, plan:246, tag:"", tagClass:"" },
+  { code:"8113", name:"杨凌职业技术学院", type:"文史", score:400, rank:46431, plan:281, tag:"", tagClass:"" },
+  { code:"8124", name:"陕西能源职业技术学院", type:"文史", score:399, rank:47056, plan:346, tag:"", tagClass:"" },
+  { code:"8133", name:"宝鸡职业技术学院", type:"文史", score:398, rank:47290, plan:450, tag:"", tagClass:"" },
+  { code:"8125", name:"陕西职业技术学院", type:"文史", score:382, rank:53485, plan:1311, tag:"", tagClass:"" },
+  { code:"8125", name:"陕西职业技术学院", type:"理工", score:367, rank:null, plan:1311, tag:"", tagClass:"" },
+  { code:"8139", name:"西安职业技术学院", type:"文史", score:395, rank:48670, plan:148, tag:"", tagClass:"" },
+  { code:"8123", name:"陕西交通职业技术学院", type:"文史", score:395, rank:48480, plan:297, tag:"", tagClass:"" },
+  { code:"8055", name:"陕西警察学院", type:"文史", score:390, rank:50568, plan:339, tag:"", tagClass:"" },
+  { code:"8148", name:"西安医学高等专科学校", type:"文史", score:389, rank:50836, plan:352, tag:"", tagClass:"" },
+  { code:"8122", name:"陕西国防工业职业技术学院", type:"文史", score:407, rank:43864, plan:220, tag:"", tagClass:"" },
+  { code:"8143", name:"渭南职业技术学院", type:"文史", score:386, rank:51997, plan:301, tag:"", tagClass:"" },
+  { code:"8129", name:"陕西邮电职业技术学院", type:"文史", score:386, rank:51876, plan:38, tag:"", tagClass:"" },
+  { code:"8141", name:"汉中职业技术学院", type:"文史", score:378, rank:54933, plan:824, tag:"", tagClass:"" },
+  { code:"8127", name:"陕西青年职业学院", type:"文史", score:380, rank:54440, plan:401, tag:"", tagClass:"" },
+  { code:"8106", name:"陕西工商职业学院", type:"文史", score:377, rank:55356, plan:255, tag:"", tagClass:"" },
+  { code:"8140", name:"商洛职业技术学院", type:"文史", score:376, rank:55594, plan:126, tag:"", tagClass:"" },
+  { code:"8151", name:"陕西机电职业技术学院", type:"文史", score:375, rank:56044, plan:305, tag:"", tagClass:"" },
+  { code:"8142", name:"延安职业技术学院", type:"文史", score:375, rank:56166, plan:215, tag:"", tagClass:"" },
+  { code:"8149", name:"榆林职业技术学院", type:"文史", score:374, rank:56296, plan:373, tag:"", tagClass:"" },
+  { code:"8144", name:"安康职业技术学院", type:"文史", score:371, rank:57583, plan:386, tag:"", tagClass:"" },
+  { code:"8109", name:"陕西航空职业技术学院", type:"文史", score:361, rank:60628, plan:460, tag:"", tagClass:"" },
+  { code:"8152", name:"神木职业技术学院", type:"文史", score:361, rank:60870, plan:228, tag:"", tagClass:"" },
+  { code:"8145", name:"铜川职业技术学院", type:"文史", score:359, rank:61440, plan:505, tag:"", tagClass:"" },
+  { code:"8150", name:"陕西艺术职业学院", type:"文史", score:356, rank:62380, plan:121, tag:"", tagClass:"" },
+
+  // === 陕西省内民办院校 ===
+  { code:"8037", name:"西安欧亚学院", type:"文史", score:390, rank:50544, plan:11, tag:"民办", tagClass:"badge-normal" },
+  { code:"8038", name:"西安翻译学院", type:"文史", score:388, rank:51424, plan:39, tag:"民办", tagClass:"badge-normal" },
+  { code:"8036", name:"西安培华学院", type:"文史", score:387, rank:51636, plan:84, tag:"民办", tagClass:"badge-normal" },
+  { code:"8051", name:"西安科技大学高新学院", type:"文史", score:381, rank:53838, plan:115, tag:"民办", tagClass:"badge-normal" },
+  { code:"8035", name:"陕西国际商贸学院", type:"文史", score:367, rank:58875, plan:105, tag:"民办", tagClass:"badge-normal" },
+  { code:"8034", name:"西安思源学院", type:"文史", score:363, rank:60259, plan:188, tag:"民办", tagClass:"badge-normal" },
+  { code:"8056", name:"西安交通工程学院", type:"文史", score:360, rank:61049, plan:62, tag:"民办", tagClass:"badge-normal" },
+  { code:"8057", name:"陕西服装工程学院", type:"文史", score:354, rank:63102, plan:16, tag:"民办", tagClass:"badge-normal" },
+  { code:"8131", name:"西安海棠职业学院", type:"文史", score:354, rank:63011, plan:268, tag:"民办", tagClass:"badge-normal" },
+  { code:"8049", name:"西安明德理工学院", type:"文史", score:336, rank:67862, plan:178, tag:"民办", tagClass:"badge-normal" },
+  { code:"8045", name:"西安工商学院", type:"文史", score:321, rank:71290, plan:317, tag:"民办", tagClass:"badge-normal" },
+  { code:"8059", name:"西安汽车职业大学", type:"文史", score:249, rank:79194, plan:367, tag:"民办", tagClass:"badge-normal" },
+
+  // === 陕西省内低分段 / 征集 ===
+  { code:"8105", name:"西安城市建设职业学院", type:"文史", score:150, rank:80529, plan:668, tag:"踩线", tagClass:"badge" },
+  { code:"8058", name:"西安信息职业大学", type:"文史", score:150, rank:80528, plan:550, tag:"踩线", tagClass:"badge" },
+  { code:"8147", name:"陕西旅游烹饪职业学院", type:"文史", score:190, rank:80368, plan:770, tag:"征集大户", tagClass:"badge" },
+  { code:"8147", name:"陕西旅游烹饪职业学院", type:"理工", score:152, rank:172136, plan:770, tag:"理工踩线", tagClass:"badge" },
+
+  // === 省外热门院校（在陕招生） ===
+  { code:"8203", name:"兰州交通大学", type:"文史", score:457, rank:24190, plan:4, tag:"超本科线60分", tagClass:"badge-hot" },
+  { code:"7121", name:"重庆医药高等专科学校", type:"文史", score:456, rank:24522, plan:4, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"7102", name:"重庆电力高等专科学校", type:"文史", score:416, rank:39971, plan:10, tag:"", tagClass:"" },
+  { code:"7108", name:"重庆电子科技职业大学", type:"文史", score:409, rank:42788, plan:10, tag:"", tagClass:"" },
+  { code:"5358", name:"长沙电力职业技术学院", type:"文史", score:409, rank:43137, plan:5, tag:"", tagClass:"" },
+  { code:"5101", name:"汉江师范学院", type:"文史", score:430, rank:34413, plan:5, tag:"", tagClass:"" },
+  { code:"1302", name:"天津市职业大学", type:"文史", score:437, rank:31802, plan:4, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"1103", name:"北京电子科技职业学院", type:"文史", score:407, rank:43658, plan:3, tag:"", tagClass:"" },
+  { code:"1103", name:"北京电子科技职业学院", type:"理工", score:430, rank:93226, plan:12, tag:"", tagClass:"" },
+  { code:"3111", name:"苏州职业大学", type:"文史", score:396, rank:48260, plan:5, tag:"", tagClass:"" },
+  { code:"5102", name:"武汉职业技术学院", type:"文史", score:417, rank:39662, plan:7, tag:"", tagClass:"" },
+  { code:"3160", name:"南京信息职业技术学院", type:"文史", score:398, rank:47388, plan:6, tag:"", tagClass:"" },
+  { code:"5123", name:"武汉铁路职业技术学院", type:"文史", score:398, rank:47366, plan:32, tag:"", tagClass:"" },
+  { code:"6102", name:"广东轻工职业技术大学", type:"文史", score:377, rank:55325, plan:4, tag:"", tagClass:"" },
+  { code:"5312", name:"湖南铁道职业技术学院", type:"文史", score:395, rank:48683, plan:10, tag:"", tagClass:"" },
+  { code:"5361", name:"湖南高速铁路职业技术学院", type:"文史", score:390, rank:50352, plan:10, tag:"", tagClass:"" },
+  { code:"3506", name:"日照职业技术学院", type:"文史", score:385, rank:52428, plan:5, tag:"", tagClass:"" },
+  { code:"5301", name:"长沙民政职业技术学院", type:"文史", score:441, rank:30007, plan:9, tag:"超本科线", tagClass:"badge-hot" },
+  { code:"1303", name:"天津医学高等专科学校", type:"文史", score:431, rank:33929, plan:14, tag:"", tagClass:"" },
+  { code:"1303", name:"天津医学高等专科学校", type:"理工", score:402, rank:112848, plan:26, tag:"", tagClass:"" },
+];
+
+let currentType = 'all';
+
+async function init() {
+  try { const r = await fetch('/api/me'); if (!r.ok) location.href='/login.html'; } catch(e) { location.href='/login.html'; }
+  filterData();
 }
+
+function filterData() {
+  const kw = document.getElementById('searchInput').value.trim().toLowerCase();
+  let data = REAL_DATA;
+
+  if (currentType !== 'all') {
+    data = data.filter(r => r.type === currentType);
+  }
+  if (kw) {
+    data = data.filter(r => r.name.toLowerCase().includes(kw) || r.code === kw);
+  }
+
+  const tbody = document.getElementById('historyBody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;color:#999;">无匹配数据</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(r => {
+    const rankStr = r.rank ? r.rank.toLocaleString() : '—';
+    const tagHtml = r.tag ? `<span class="badge ${r.tagClass||'badge-normal'}">${r.tag}</span>` : '';
+    return `<tr>
+      <td><strong>${r.code}</strong></td>
+      <td style="text-align:left;">${r.name}</td>
+      <td>${r.type}</td>
+      <td class="score">${r.score}</td>
+      <td><span class="rank">${rankStr}</span></td>
+      <td>${r.plan}</td>
+      <td>${tagHtml}</td>
+    </tr>`;
+  }).join('');
+
+  document.querySelector('.sub').innerHTML =
+    `📊 显示 <strong>${data.length}</strong> 条 · 🟡 数据来源：<a href="https://www.sneea.cn" target="_blank">陕西省教育考试院</a> 2024年正式投档统计表 · <a href="https://www.gk100.com/read_30290613.htm" target="_blank">高考100</a> · <a href="https://www.dxsbb.com/news/147463.html" target="_blank">大学生必备网</a><br>⚠️ <strong>仅展示部分在陕招生院校。</strong> 完整数据请访问上述官方网站。`;
+}
+
 window.addEventListener('load',init);
 </script>
 </body>
