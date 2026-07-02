@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>志愿填报 — 陕西省高考志愿模拟填报系统</title>
+<title>志愿填报 - 陕西省高考志愿模拟填报系统</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: -apple-system,BlinkMacSystemFont,"Microsoft YaHei","微软雅黑","Segoe UI",sans-serif; background:#eef2f6; min-height:100vh; font-size:14px; color:#333; -webkit-tap-highlight-color:transparent; }
@@ -80,7 +80,7 @@ tr.filled { background:#e8f5e9; }
   <div class="top-inner">
     <div class="sys-name">🏫 陕西省高考志愿模拟填报系统</div>
     <div class="user-info">
-      <span id="userDisplay">——</span>
+      <span id="userDisplay">--</span>
       <a href="guide.html">📖 报考指南</a>
       <a href="plan.html">📋 招生计划</a>
       <a href="history.html">📈 历年数据</a>
@@ -91,11 +91,11 @@ tr.filled { background:#e8f5e9; }
 </div>
 
 <div class="disclaimer">
-  ⚠️ 免责声明：本系统为模拟填报练习，数据和规则仅供参考，正式填报请登录陕西省教育考试院官网。
+  ⚠️ 免责声明:本系统为模拟填报练习,数据和规则仅供参考,正式填报请登录陕西省教育考试院官网。
 </div>
 
 <div class="locked-banner" id="lockedBanner" style="display:none">
-  <div class="lock-text">🔒 模拟志愿已确认 <span style="font-size:11px;color:#ccc;">（如需练习，可回档重新填报）</span></div>
+  <div class="lock-text">🔒 模拟志愿已确认 <span style="font-size:11px;color:#ccc;">(如需练习,可回档重新填报)</span></div>
   <div class="lock-sub" id="lockTime"></div>
 </div>
 
@@ -108,9 +108,9 @@ tr.filled { background:#e8f5e9; }
 </div>
 
 <div class="helper-panel">
-  <div class="helper-toggle" onclick="toggleHelper()">🔍 代码查询（搜院校/专业） <span id="helperArrow">▼</span></div>
+  <div class="helper-toggle" onclick="toggleHelper()">🔍 代码查询(搜院校/专业) <span id="helperArrow">▼</span></div>
   <div class="helper-body" id="helperBody">
-    <input type="text" id="helperInput" placeholder="输入院校名或代码，如『铁道』『8119』" oninput="doSearch()">
+    <input type="text" id="helperInput" placeholder="输入院校名或代码,如『铁道』『8119』" oninput="doSearch()">
     <div class="helper-results" id="helperResults"></div>
   </div>
 </div>
@@ -143,8 +143,8 @@ tr.filled { background:#e8f5e9; }
 <div class="modal-overlay" id="confirmModal">
   <div class="modal">
     <h3>⚠️ 确认提交志愿</h3>
-    <p>确认后志愿将<b>锁定不可修改</b>。<br><span style="color:#999;">（此为模拟练习，实际正式填报确认后不可更改）</span></p>
-    <div style="margin-bottom:4px;font-size:12px;color:#666;">本账号绑定身份证号：<b id="confirmIdDisplay" style="color:#1a3a6b;"></b></div>
+    <p>确认后志愿将<b>锁定不可修改</b>。<br><span style="color:#999;">(此为模拟练习,实际正式填报确认后不可更改)</span></p>
+    <div style="margin-bottom:4px;font-size:12px;color:#666;">本账号绑定身份证号:<b id="confirmIdDisplay" style="color:#1a3a6b;"></b></div>
     <input type="text" id="confirmInput" placeholder="请输入18位身份证号以确认" maxlength="18">
     <p id="confirmErr" style="color:#c62828;font-size:12px;margin-top:6px;display:none;"></p>
     <div class="btns">
@@ -159,6 +159,8 @@ let CONFIRMED = false;
 let CURRENT_IDCARD = '';
 let schoolCache = {};
 let groupCache = {};
+let majorCache = {};
+let searchCache = {};
 
 async function init() {
   try {
@@ -169,8 +171,8 @@ async function init() {
     if (d.is_admin) { document.getElementById('adminLink').style.display = 'inline-block'; }
     CURRENT_IDCARD = d.raw_idcard || '';
     if (!CURRENT_IDCARD) {
-      // 旧账号无身份证号：重定向到登录页提示管理员
-      document.getElementById('userDisplay').textContent = (d.display_name||d.username) + '（⚠ 未绑定身份证号，请联系管理员）';
+      // 旧账号无身份证号:重定向到登录页提示管理员
+      document.getElementById('userDisplay').textContent = (d.display_name||d.username) + '(⚠ 未绑定身份证号,请联系管理员)';
     }
   } catch(e) { window.location.href = '/login.html'; return; }
   checkConfirmed();
@@ -183,9 +185,9 @@ function checkConfirmed() {
   if (c) {
     CONFIRMED = true;
     document.getElementById('lockedBanner').style.display = 'block';
-    document.getElementById('lockTime').textContent = '锁定时间：' + c;
-    var rollbackHtml = '<button class="btn btn-rollback" onclick="doRollback()" title="模拟系统允许回退练习">🔄 回档（重新填报）</button>';
-    rollbackHtml += '<span style="font-size:11px;color:#e65100;margin-left:8px;">⚠ 仅限模拟练习。正式填报告不可修改！</span>';
+    document.getElementById('lockTime').textContent = '锁定时间:' + c;
+    var rollbackHtml = '<button class="btn btn-rollback" onclick="doRollback()" title="模拟系统允许回退练习">🔄 回档(重新填报)</button>';
+    rollbackHtml += '<span style="font-size:11px;color:#e65100;margin-left:8px;">⚠ 仅限模拟练习。正式填报告不可修改!</span>';
     ['saveBtn','confirmBtn','saveBtn2','confirmBtn2'].forEach(function(id) {
       var b = document.getElementById(id); if (b) b.disabled = true;
     });
@@ -313,43 +315,59 @@ async function loadLocal() {
   if (!raw) return;
   try {
     const vols = JSON.parse(raw);
+    // Step1: 先填充所有输入框
     vols.forEach(function(v) {
       if (v.school) document.getElementById('sc-'+v.order).value = v.school;
       if (v.group) document.getElementById('gc-'+v.order).value = v.group;
       if (v.majors) v.majors.forEach(function(m, idx) { if (m) document.getElementById('m'+(idx+1)+'-'+v.order).value = m; });
       if (v.adjust) document.getElementById('adj-'+v.order).checked = true;
     });
-    const filled = vols.filter(v => v.school || v.group || (v.majors && v.majors.some(m => m)));
-    for (const v of filled) { if (v.school) await lookupSchool(v.order); }
-    await new Promise(r => setTimeout(r, 300));
-    for (const v of filled) {
-      if (!v.group || !v.school) continue;
-      try {
-        const sr = await fetch('/api/lookup/school/'+v.school); const s = await sr.json();
-        if (s) {
-          const gr = await fetch('/api/lookup/group/'+s.id+'/'+v.group); const g = await gr.json();
-          if (g) {
-            const gn = document.getElementById('gn-'+v.order);
-            gn.textContent = g.group_name+(g.subject_requirement?' ['+g.subject_requirement+']':'');
-            gn.className = 'auto-name group-name'; gn.title = g.group_name;
-            groupCache[g.id] = g;
-            for (let j = 0; j < v.majors.length; j++) {
-              if (!v.majors[j]) continue;
-              const mr = await fetch('/api/lookup/major/'+g.id+'/'+v.majors[j]); const m = await mr.json();
-              if (m) {
-                const mn = document.getElementById('mn'+(j+1)+'-'+v.order);
-                mn.textContent = m.major_name; mn.className = 'auto-name major-name'; mn.title = m.major_name;
-              }
-            }
-          }
-        }
-      } catch(e) {}
+
+    // Step2: 收集待查的院校代码(去重)
+    const codeSet = new Set();
+    vols.forEach(v => { if (v.school) codeSet.add(v.school); });
+
+    // Step3: 并发查所有院校(一次 API 返回院校+专业组+专业全量)
+    const loadPromises = [];
+    for (const code of codeSet) {
+      if (schoolCache[code]) { loadPromises.push(Promise.resolve(schoolCache[code])); continue; }
+      loadPromises.push(
+        fetch('/api/lookup/school/' + code)
+          .then(r => r.json())
+          .then(s => { if (s) { schoolCache[code] = s; groupCache[s.id] = s; } return s; })
+          .catch(() => null)
+      );
     }
+    await Promise.all(loadPromises);
+
+    // Step4: 根据缓存填充名称到 DOM
     vols.forEach(function(v) {
-      if (v.school) document.getElementById('sc-'+v.order).value = v.school;
-      if (v.group) document.getElementById('gc-'+v.order).value = v.group;
-      if (v.majors) v.majors.forEach(function(m, idx) { if (m) document.getElementById('m'+(idx+1)+'-'+v.order).value = m; });
+      if (!v.school) return;
+      const school = schoolCache[v.school];
+      if (!school) return;
+      // 填充院校名称
+      const sn = document.getElementById('sn-'+v.order);
+      sn.textContent = school.name; sn.className = 'auto-name school-name'; sn.title = school.name;
+
+      // 填充专业组名称
+      if (!v.group) return;
+      const group = school.groups.find(g => g.group_code === v.group);
+      if (!group) return;
+      const gn = document.getElementById('gn-'+v.order);
+      gn.textContent = group.group_name + (group.subject_requirement ? ' ['+group.subject_requirement+']' : '');
+      gn.className = 'auto-name group-name'; gn.title = group.group_name;
+
+      // 填充专业名称
+      if (!v.majors) return;
+      v.majors.forEach(function(m, idx) {
+        if (!m) return;
+        const major = (group.majors || []).find(mj => mj.major_code === m);
+        if (!major) return;
+        const mn = document.getElementById('mn'+(idx+1)+'-'+v.order);
+        mn.textContent = major.major_name; mn.className = 'auto-name major-name'; mn.title = major.major_name;
+      });
     });
+
     const sa = localStorage.getItem('volunteers_saved_at');
     if (sa) { document.getElementById('saveStatus').textContent = '已加载本地数据 ('+sa+')'; setTimeout(function(){document.getElementById('saveStatus').textContent='';},5000); }
     updateFilledCount();
@@ -357,7 +375,7 @@ async function loadLocal() {
 }
 function showConfirm() {
   if (CONFIRMED) return;
-  if (!CURRENT_IDCARD) { alert('本账号未绑定身份证号，无法确认志愿。\n请联系管理员重新生成账号。'); return; }
+  if (!CURRENT_IDCARD) { alert('本账号未绑定身份证号,无法确认志愿。\n请联系管理员重新生成账号。'); return; }
   document.getElementById('confirmInput').value = '';
   document.getElementById('confirmErr').style.display = 'none';
   document.getElementById('confirmIdDisplay').textContent = CURRENT_IDCARD;
@@ -368,8 +386,8 @@ function doConfirm() {
   const input = document.getElementById('confirmInput').value.trim();
   const errEl = document.getElementById('confirmErr');
   if (!input) { errEl.textContent = '请输入身份证号'; errEl.style.display='block'; return; }
-  if (!/^\d{17}[\dXx]$/.test(input)) { errEl.textContent = '身份证号格式不正确（应为18位）'; errEl.style.display='block'; return; }
-  if (input !== CURRENT_IDCARD) { errEl.textContent = '身份证号与账号绑定的不一致，请核对后重新输入'; errEl.style.display='block'; return; }
+  if (!/^\d{17}[\dXx]$/.test(input)) { errEl.textContent = '身份证号格式不正确(应为18位)'; errEl.style.display='block'; return; }
+  if (input !== CURRENT_IDCARD) { errEl.textContent = '身份证号与账号绑定的不一致,请核对后重新输入'; errEl.style.display='block'; return; }
   errEl.style.display='none';
   saveLocal();
   const ts = new Date().toLocaleString('zh-CN');
@@ -377,16 +395,16 @@ function doConfirm() {
   CONFIRMED = true;
   hideConfirm();
   try { fetch('/api/activity/ping', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'confirm'})}); } catch(e){}
-  alert('✅ 模拟志愿已确认！（仅本地锁定）\n\n正式填报请登录陕西省教育考试院官网。');
+  alert('✅ 模拟志愿已确认!(仅本地锁定)\n\n正式填报请登录陕西省教育考试院官网。');
   location.reload();
 }
 
 function doRollback() {
-  if (!confirm('确认回档？\n\n这将清除确认状态，允许重新填报志愿。\n\n⚠ 仅限模拟练习！正式填报志愿确认后不可修改！')) return;
+  if (!confirm('确认回档?\n\n这将清除确认状态,允许重新填报志愿。\n\n⚠ 仅限模拟练习!正式填报志愿确认后不可修改!')) return;
   localStorage.removeItem('volunteer_confirmed');
   CONFIRMED = false;
   try { fetch('/api/activity/ping', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'rollback'})}); } catch(e){}
-  alert('✅ 已回档！可以重新填报志愿。');
+  alert('✅ 已回档!可以重新填报志愿。');
   location.reload();
 }
 
@@ -401,14 +419,18 @@ function doSearch() {
     const kw = document.getElementById('helperInput').value.trim();
     const c = document.getElementById('helperResults');
     if (!kw) { c.innerHTML=''; return; }
+    // 缓存：相同关键词不重复请求
+    if (searchCache[kw]) { c.innerHTML = searchCache[kw]; return; }
     try {
       const r = await fetch('/api/search?keyword='+encodeURIComponent(kw));
       const d = await r.json();
-      c.innerHTML = d.length ? d.slice(0,30).map(function(i) {
-        return '<div class="row"><span class="code">['+i.school_code+']</span>'+i.school_name+' → <span class="code">组'+i.group_code+'</span>'+(i.group_name||'')+' → <span class="code">['+i.major_code+']</span>'+i.major_name+' <span style="color:#999;">招'+i.plan_count+'人 ¥'+i.tuition+'/年</span></div>';
+      const html = d.length ? d.slice(0,30).map(function(i) {
+        return '<div class="row"><span class="code">['+i.school_code+']</span>'+i.school_name+' → <span class="code">组'+i.group_code+'</span>'+(i.group_name||'')+' → <span class="code">['+i.major_code+']</span>'+i.major_name+' <span style="color:#999;">招'+i.plan_count+'人 ￥'+i.tuition+'/年</span></div>';
       }).join('') : '<div style="padding:10px;color:#999;">未找到</div>';
+      searchCache[kw] = html;
+      c.innerHTML = html;
     } catch(e) { c.innerHTML = '<div style="padding:10px;color:#c62828;">查询失败</div>'; }
-  }, 300);
+  }, 400);
 }
 
 async function logout() { await fetch('/api/logout',{method:'POST'}); window.location.href='/login.html'; }
