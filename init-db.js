@@ -36,7 +36,9 @@ async function main(sharedDb = null) {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
+      raw_password TEXT,
       id_card_hash TEXT,
+      raw_idcard TEXT,
       locked_ip TEXT,
       display_name TEXT,
       note TEXT,
@@ -690,8 +692,8 @@ async function main(sharedDb = null) {
   console.log('创建管理员账号...');
   const adminHash = bcrypt.hashSync('cqvtr#eATHj@sn@h', 10);
   const adminCardHash = bcrypt.hashSync('610000200001011234', 10);
-  dbRun('INSERT OR REPLACE INTO users (id, username, password_hash, id_card_hash, display_name, is_admin) VALUES (1, ?, ?, ?, ?, 1)',
-    ['admin', adminHash, adminCardHash, '系统管理员']);
+  dbRun('INSERT OR REPLACE INTO users (id, username, password_hash, raw_password, id_card_hash, raw_idcard, display_name, is_admin) VALUES (1, ?, ?, ?, ?, ?, ?, 1)',
+    ['admin', adminHash, 'cqvtr#eATHj@sn@h', adminCardHash, '610000200001011234', '系统管理员']);
 
   // ========== 写入文件 ==========
   const buffer = db.export();
