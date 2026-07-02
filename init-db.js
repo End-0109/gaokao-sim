@@ -711,11 +711,7 @@ async function main(sharedDb = null) {
 }
 
 if (require.main === module) {
-  if (require.main === module) {
   main().catch(e => { console.error(e); process.exit(1); });
-}
-
-module.exports = { main };
 }
 
 module.exports = { main };

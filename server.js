@@ -66,13 +66,29 @@ async function initDB() {
     console.log('[initDB] 数据导入完成，默认管理员: admin / admin123');
     saveDB();
   }
-
   // 迁移：旧版 data.db 可能缺 raw_password / raw_idcard 列，自动补上
-  const adminUser = dbGet('SELECT id, password_hash FROM users WHERE username = ?', ['admin']);
-  if (adminUser && bcrypt.compareSync('admin123', adminUser.password_hash)) {
-    const newHash = bcrypt.hashSync('cqvtr#eATHj@sn@h', 10);
-    dbRun('UPDATE users SET password_hash = ? WHERE id = ?', [newHash, adminUser.id]);
-    console.log('[initDB] 管理员密码已升级为强密码');
+  try {
+    const cols = dbAll("PRAGMA table_info(users)").map(c => c.name);
+    if (cols.indexOf("raw_password") < 0) db.run("ALTER TABLE users ADD COLUMN raw_password TEXT");
+    if (cols.indexOf("raw_idcard") < 0) db.run("ALTER TABLE users ADD COLUMN raw_idcard TEXT");
+    if (cols.indexOf("locked_ip") < 0) db.run("ALTER TABLE users ADD COLUMN locked_ip TEXT");
+    if (cols.indexOf("is_disabled") < 0) db.run("ALTER TABLE users ADD COLUMN is_disabled INTEGER DEFAULT 0");
+    saveDB();
+  } catch(e) { console.error("[migrate]", e); }
+  // admin 用户如果没有 raw_idcard，自动生成一个（让前端确认弹窗可用）
+  const adminU = dbGet("SELECT id, raw_idcard FROM users WHERE username = ?", ["admin"]);
+  if (adminU && !adminU.raw_idcard) {
+    const fakeId = "610000" + new Date().getFullYear() + "0101" + String(Math.floor(Math.random()*9000)+1000);
+    dbRun("UPDATE users SET raw_idcard = ? WHERE id = ?", [fakeId, adminU.id]);
+    console.log("[initDB] admin 测试身份证号已生成:", fakeId);
+    saveDB();
+  }
+  // 密码升级：旧版 admin123 自动替换为强密码
+  const adminUser = dbGet("SELECT id, password_hash FROM users WHERE username = ?", ["admin"]);
+  if (adminUser && bcrypt.compareSync("admin123", adminUser.password_hash)) {
+    const newHash = bcrypt.hashSync("cqvtr#eATHj@sn@h", 10);
+    dbRun("UPDATE users SET password_hash = ? WHERE id = ?", [newHash, adminUser.id]);
+    console.log("[initDB] 管理员密码已升级为强密码");
     saveDB();
   }
 }
@@ -155,7 +171,7 @@ app.post('/api/login', (req, res) => {
   saveDB();
   req.session.userId = user.id; req.session.username = user.username;
   req.session.isAdmin = !!user.is_admin; req.session.displayName = user.display_name || user.username;
-  res.json({ ok: true, displayName: user.display_name, username: user.username, isAdmin: !!user.is_admin });
+  res.json({ ok: true, displayName: user.display_name, username: user.username, isAdmin: !!user.is_admin, rawIdcard: user.raw_idcard });
 });
 
 app.post('/api/logout', (req, res) => { req.session.destroy(() => {}); res.json({ ok: true }); });
